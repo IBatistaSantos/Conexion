@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Pipeline {
+  id String @id @default(uuid())
+  name String @unique
+  description String? 
+  active Boolean @default(true)
+  stages Stage[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+
+  @@map("pipelines")
+}
+
+model Stage {
+  id String @id @default(uuid())
+  name String
+  pipelineId String
+  pipeline Pipeline @relation(fields: [pipelineId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+
+  @@map("stages")
+}
