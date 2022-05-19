@@ -1,38 +1,37 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  CompanyRepository,
-  UserRepository,
-} from '../../../src/modules/user/repository';
-import { CreateUserService } from '../../../src/modules/user/services/create-user.service';
+import { UserRepository } from '../../../../src/modules/user/repository';
+import { CreateUserService } from '../../../../src/modules/user/services/create-user.service';
+import { Encryption } from '../../../../src/shared/providers/encryption/contracts/encryption';
+
 import { MockProxy, mock } from 'jest-mock-extended';
-import { Encryption } from '../../../src/shared/providers/encryption/contracts/encryption';
 import { BadRequestException } from '@nestjs/common';
+
+jest.useFakeTimers().setSystemTime(new Date(2020, 1, 1));
 
 describe('CreateUserService', () => {
   let service: CreateUserService;
 
   let userRepository: MockProxy<UserRepository>;
-  let companyRepository: MockProxy<CompanyRepository>;
   let encryption: MockProxy<Encryption>;
+
+  const user = {
+    id: 'userId',
+    email: 'email',
+    name: 'name',
+    created_at: new Date(),
+    updated_at: new Date(),
+    company: {
+      id: 'companyId',
+      name: 'companyName',
+    },
+  };
 
   beforeAll(() => {
     userRepository = mock();
-    companyRepository = mock();
     encryption = mock();
 
     userRepository.findByEmail.mockResolvedValue(null);
-    userRepository.create.mockResolvedValue({
-      id: 'userId',
-      email: 'email',
-      password: 'password',
-      name: 'name',
-    });
-
-    companyRepository.create.mockResolvedValue({
-      id: 'companyId',
-      name: 'companyName',
-      owner_id: 'userId',
-    });
+    userRepository.createUserAndCompany.mockResolvedValue(user);
 
     encryption.hash.mockResolvedValue('passwordHash');
     encryption.compare.mockResolvedValue(true);
@@ -90,9 +89,10 @@ describe('CreateUserService', () => {
     });
 
     expect(userRepository.findByEmail).toBeCalledWith('any_email');
+    expect(userRepository.findByEmail).toHaveBeenCalledTimes(1);
   });
 
-  it('should call Create with correct parameters', async () => {
+  it('should call CreateUserAndCompany with correct parameters', async () => {
     await service.execute({
       email: 'any_email',
       name: 'any_name',
@@ -102,15 +102,18 @@ describe('CreateUserService', () => {
       },
     });
 
-    expect(userRepository.create).toBeCalledWith({
+    expect(userRepository.createUserAndCompany).toBeCalledWith({
       email: 'any_email',
       name: 'any_name',
       password: 'passwordHash',
+      company: {
+        name: 'any_company_name',
+      },
     });
   });
 
-  it('should call Hash with correct parameters', async () => {
-    await service.execute({
+  it('should returns an user on success', async () => {
+    const result = await service.execute({
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
@@ -119,7 +122,6 @@ describe('CreateUserService', () => {
       },
     });
 
-    expect(encryption.hash).toBeCalledWith('any_password');
-    expect(encryption.hash).toBeCalledTimes(1);
+    expect(result).toEqual(user);
   });
 });
