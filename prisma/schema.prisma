@@ -10,28 +10,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
 
-model Pipeline {
-  id String @id @default(uuid())
-  name String @unique
-  description String? 
-  active Boolean @default(true)
-  stages Stage[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
-
-  @@map("pipelines")
+   owner Company? @relation("CreatorCompany")
+  @@map("users")
 }
 
-model Stage {
-  id String @id @default(uuid())
+model Company {
+  id   String @id @default(uuid())
   name String
-  pipelineId String
-  pipeline Pipeline @relation(fields: [pipelineId], references: [id])
+
+  ownerId String @map("owner_id") @unique
+  owner   User?  @relation(name: "CreatorCompany", fields: [ownerId], references: [id])
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
-
-  @@map("stages")
+  @@map("companies")
 }
+
+//model Pipeline {
+ // id          String   @id @default(uuid())
+//  name        String   @unique
+ // description String?
+ // active      Boolean  @default(true)
+ // stages      Stage[]
+ // createdAt   DateTime @default(now()) @map("created_at")
+ // updatedAt   DateTime @default(now()) @map("updated_at")
+
+
+//@@map("pipelines")
+//}
+
+
+//model Stage {
+//  id         String   @id @default(uuid())
+//  name       String
+//  pipelineId String
+ // pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
+//createdAt  DateTime @default(now()) @map("created_at")
+//updatedAt  DateTime @default(now()) @map("updated_at")
+
+
+//  @@map("stages")
+//}
