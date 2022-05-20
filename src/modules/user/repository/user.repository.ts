@@ -3,9 +3,12 @@ import { User } from '../entities/user.entity';
 export interface UserRepository {
   create(params: CreateUser): Promise<User>;
   findByEmail(email: string): Promise<User | undefined>;
+  findById(id: string): Promise<User | undefined>;
   createUserAndCompany(
     params: CreateUserAndCompany,
   ): Promise<ResponseCreateUserAndCompany>;
+
+  update({ name, email, password, userId }: UpdateUser): Promise<User>;
 }
 
 type CreateUserAndCompany = CreateUser & {
@@ -30,4 +33,11 @@ type ResponseCreateUserAndCompany = {
     id: string;
     name: string;
   };
+};
+
+type UpdateUser = {
+  name?: string;
+  email?: string;
+  password?: string;
+  userId: string;
 };

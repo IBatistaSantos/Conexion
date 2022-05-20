@@ -37,4 +37,8 @@ export class AuthenticationService {
       },
     };
   }
+
+  async validateUser(payload: any) {
+    return await this.userRepository.findById(payload.userId);
+  }
 }

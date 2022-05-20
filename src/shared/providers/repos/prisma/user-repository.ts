@@ -6,6 +6,36 @@ import { UserRepository } from 'src/modules/user/repository/user.repository';
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  update({
+    name,
+    email,
+    password,
+    userId,
+  }: {
+    name?: string;
+    email?: string;
+    password?: string;
+    userId: string;
+  }): Promise<User> {
+    return this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: name || undefined,
+        email: email || undefined,
+        password: password || undefined,
+      },
+    });
+  }
+
+  findById(id: string): Promise<User> {
+    return this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
   async create({ name, email, password }: CreateUser): Promise<User> {
     return this.prismaService.user.create({
       data: {

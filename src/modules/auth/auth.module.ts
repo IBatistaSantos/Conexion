@@ -6,6 +6,7 @@ import { Bcrypt } from 'src/shared/providers/encryption/implementation/bcrypt';
 import { AuthenticationService } from './services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports: [
     UserModule,
@@ -21,6 +22,7 @@ import { ConfigService } from '@nestjs/config';
     AuthenticationService,
     { provide: 'EncryptionProvider', useClass: Bcrypt },
     { provide: 'UserRepository', useClass: PrismaUserRepository },
+    JwtStrategy,
   ],
   controllers: [AuthenticationController],
   exports: [],
