@@ -3,7 +3,7 @@ import { User } from '../entities/user.entity';
 export interface UserRepository {
   create(params: CreateUser): Promise<User>;
   findByEmail(email: string): Promise<User | undefined>;
-  findById(id: string): Promise<User | undefined>;
+  findById(id: string): Promise<DetailsResponse | undefined>;
   createUserAndCompany(
     params: CreateUserAndCompany,
   ): Promise<ResponseCreateUserAndCompany>;
@@ -40,4 +40,10 @@ type UpdateUser = {
   email?: string;
   password?: string;
   userId: string;
+};
+
+type DetailsResponse = User & {
+  owner: {
+    id: string;
+  };
 };

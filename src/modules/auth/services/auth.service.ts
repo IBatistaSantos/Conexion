@@ -18,11 +18,16 @@ export class AuthenticationService {
 
   async execute({ email, password }: AuthenticationDto) {
     const userAlreadyExists = await this.userRepository.findByEmail(email);
+
+    if (!userAlreadyExists) {
+      throw new BadRequestException(`Credentials invalid`);
+    }
+
     const isMatch = await this.encryption.compare(
       password,
       userAlreadyExists.password,
     );
-    if (!userAlreadyExists || !isMatch) {
+    if (!isMatch) {
       throw new BadRequestException(`Credentials invalid`);
     }
 
