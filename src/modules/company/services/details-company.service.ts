@@ -15,6 +15,6 @@ export class DetailsCompanyService {
       throw new NotFoundException(`Company with id ${companyId} not found`);
     }
 
-    return this.companyRepository.findById(companyId);
+    return company;
   }
 }

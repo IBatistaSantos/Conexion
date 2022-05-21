@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { CreateUserService } from 'src/modules/user/services/create-user.service';
+import { CreateUserService } from '../../user/services/create-user.service';
 import { CreateCompanyDto } from '../dtos/create-company';
 
 import { CompanyRepository } from '../repository/company.repository';
