@@ -31,7 +31,7 @@ describe('UpdateUserService', () => {
 
     userRepository.findByEmail.mockResolvedValue(null);
     userRepository.findById.mockResolvedValue(user);
-    userRepository.create.mockResolvedValue(user);
+    userRepository.update.mockResolvedValue(user);
 
     encryption.hash.mockResolvedValue('passwordHash');
     encryption.compare.mockResolvedValue(true);
@@ -101,13 +101,15 @@ describe('UpdateUserService', () => {
     );
   });
 
-  /*  it('should returns an user on success', async () => {
+  it('should returns an user on success', async () => {
     const result = await service.execute({
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
+      passwordConfirmation: 'any_password',
+      userId: 'any_id',
     });
 
     expect(result).toEqual(user);
-  }); */
+  });
 });
