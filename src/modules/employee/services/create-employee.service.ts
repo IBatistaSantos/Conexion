@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserService } from 'src/modules/user/services/create-user.service';
+import { CreateUserService } from '../../user/services/create-user.service';
 import { CreateEmployeeDto } from '../dtos/create-employee.dto';
 import { EmployeeRepository } from '../repository/employee.repository';
 
