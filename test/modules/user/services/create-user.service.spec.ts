@@ -18,12 +18,7 @@ describe('CreateUserService', () => {
     id: 'userId',
     email: 'email',
     name: 'name',
-    created_at: new Date(),
-    updated_at: new Date(),
-    company: {
-      id: 'companyId',
-      name: 'companyName',
-    },
+    password: 'password',
   };
 
   beforeAll(() => {
@@ -31,7 +26,7 @@ describe('CreateUserService', () => {
     encryption = mock();
 
     userRepository.findByEmail.mockResolvedValue(null);
-    userRepository.createUserAndCompany.mockResolvedValue(user);
+    userRepository.create.mockResolvedValue(user);
 
     encryption.hash.mockResolvedValue('passwordHash');
     encryption.compare.mockResolvedValue(true);
@@ -86,20 +81,17 @@ describe('CreateUserService', () => {
     expect(userRepository.findByEmail).toHaveBeenCalledTimes(1);
   });
 
-  it('should call CreateUserAndCompany with correct parameters', async () => {
+  it('should call Create with correct parameters', async () => {
     await service.execute({
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
     });
 
-    expect(userRepository.createUserAndCompany).toBeCalledWith({
+    expect(userRepository.create).toBeCalledWith({
       email: 'any_email',
       name: 'any_name',
       password: 'passwordHash',
-      company: {
-        name: 'any_company_name',
-      },
     });
   });
 

@@ -20,6 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   providers: [
+    ConfigService,
     AuthenticationService,
     { provide: 'EncryptionProvider', useClass: Bcrypt },
     { provide: 'UserRepository', useClass: PrismaUserRepository },
