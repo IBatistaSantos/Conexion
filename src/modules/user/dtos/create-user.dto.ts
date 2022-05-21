@@ -9,9 +9,4 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   password: string;
-
-  @IsNotEmpty()
-  company: {
-    name: string;
-  };
 }

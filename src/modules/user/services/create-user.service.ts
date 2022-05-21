@@ -12,20 +12,17 @@ export class CreateUserService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async execute({ name, email, password, company }: CreateUserDto) {
+  async execute({ name, email, password }: CreateUserDto) {
     const userAlreadyExists = await this.userRepository.findByEmail(email);
 
     if (userAlreadyExists) {
       throw new BadRequestException(`User with email ${email} already exists`);
     }
 
-    return this.userRepository.createUserAndCompany({
+    return this.userRepository.create({
+      name,
       email,
       password: await this.encryption.hash(password),
-      name,
-      company: {
-        name: company.name,
-      },
     });
   }
 }

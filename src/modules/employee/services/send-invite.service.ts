@@ -1,7 +1,7 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Inject, Injectable } from '@nestjs/common';
 import { DetailsCompanyService } from 'src/modules/company/services/details-company.service';
-import { InviteEmployeeRepository } from '../repository/invite-employee.repository';
+import { EmployeeRepository } from '../repository/employee.repository';
 
 type CreateInviteEmployeRequest = {
   name: string;
@@ -12,8 +12,8 @@ type CreateInviteEmployeRequest = {
 @Injectable()
 export class SendInviteService {
   constructor(
-    @Inject('InviteEmployeeRepository')
-    private readonly inviteEmployeeRepository: InviteEmployeeRepository,
+    @Inject('EmployeeRepository')
+    private readonly employeeRepository: EmployeeRepository,
     private readonly detailsCompanyService: DetailsCompanyService,
     private readonly mailService: MailerService,
   ) {}
@@ -41,7 +41,7 @@ export class SendInviteService {
 
     await this.mailService.sendMail(mail);
 
-    await this.inviteEmployeeRepository.create({
+    await this.employeeRepository.createInvite({
       name,
       email,
       companyId,

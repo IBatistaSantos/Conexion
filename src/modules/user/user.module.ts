@@ -8,10 +8,11 @@ import { UpdateUserService } from './services/update-user.service';
 import { ProfileUserService } from './services/profile-user.service';
 
 import { DetailsUserService } from './services/details-user.service';
+import { CompanyModule } from '../company/company.module';
 
 @Global()
 @Module({
-  imports: [],
+  imports: [CompanyModule],
   providers: [
     CreateUserService,
     UpdateUserService,
@@ -21,6 +22,6 @@ import { DetailsUserService } from './services/details-user.service';
     { provide: 'UserRepository', useClass: PrismaUserRepository },
   ],
   controllers: [UserController],
-  exports: [DetailsUserService],
+  exports: [DetailsUserService, CreateUserService],
 })
 export class UserModule {}

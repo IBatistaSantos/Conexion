@@ -68,9 +68,6 @@ describe('CreateUserService', () => {
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
-      company: {
-        name: 'any_company_name',
-      },
     });
 
     await expect(promise).rejects.toThrow(
@@ -83,9 +80,6 @@ describe('CreateUserService', () => {
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
-      company: {
-        name: 'any_company_name',
-      },
     });
 
     expect(userRepository.findByEmail).toBeCalledWith('any_email');
@@ -97,9 +91,6 @@ describe('CreateUserService', () => {
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
-      company: {
-        name: 'any_company_name',
-      },
     });
 
     expect(userRepository.createUserAndCompany).toBeCalledWith({
@@ -117,9 +108,6 @@ describe('CreateUserService', () => {
       email: 'any_email',
       name: 'any_name',
       password: 'any_password',
-      company: {
-        name: 'any_company_name',
-      },
     });
 
     expect(result).toEqual(user);
