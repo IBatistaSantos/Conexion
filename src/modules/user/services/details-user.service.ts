@@ -16,6 +16,6 @@ export class DetailsUserService {
       throw new NotFoundException(`User with id ${userId} not found`);
     }
 
-    return this.userRepository.findById(userId);
+    return user;
   }
 }
