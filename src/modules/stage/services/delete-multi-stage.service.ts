@@ -13,7 +13,6 @@ export class DeleteBulkStageService {
   constructor(
     @Inject('StageRepository')
     private readonly stageRepository: StageRepository,
-
     private readonly detailsPipelineService: DetailsPipelineService,
   ) {}
 

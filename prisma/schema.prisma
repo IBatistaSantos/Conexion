@@ -93,7 +93,7 @@ model Pipeline {
   company   Company? @relation(name: "PipelineCompany", fields: [companyId], references: [id])
 
 
-@@map("pipelines")
+  @@map("pipelines")
 }
 
 
