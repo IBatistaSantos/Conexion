@@ -4,6 +4,7 @@ import {
   DeletePipelineParams,
   FindByNameParams,
   PipelineRepository,
+  UpdatePipelineParams,
 } from '../../../repository/pipeline.repository';
 import { PrismaService } from '../../../../prisma/prisma.service';
 import { Pipeline } from './../../../entities/pipeline';
@@ -11,6 +12,17 @@ import { Pipeline } from './../../../entities/pipeline';
 @Injectable()
 export class PrismaPipelineRepository implements PipelineRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  update(params: UpdatePipelineParams): Promise<Pipeline> {
+    return this.prismaService.pipeline.update({
+      where: {
+        id: params.pipelineId,
+      },
+      data: {
+        name: params.name || undefined,
+        description: params.description || undefined,
+      },
+    });
+  }
   async delete(params: DeletePipelineParams): Promise<void> {
     await this.prismaService.pipeline.update({
       where: {

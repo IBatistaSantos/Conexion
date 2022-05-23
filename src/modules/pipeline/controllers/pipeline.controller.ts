@@ -39,13 +39,16 @@ export class PipelineController {
   }
 
   @Put(':pipeline_id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('pipeline_id') pipelineId: string,
     @Body() updatePipeline: UpdatePipelineDto,
+    @GetUser() user: User,
   ) {
     return this.updatePipelineService.execute({
       pipelineId,
       updatePipeline,
+      userId: user.id,
     });
   }
 

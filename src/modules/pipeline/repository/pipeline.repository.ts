@@ -6,8 +6,15 @@ export interface PipelineRepository {
   findById(pipelineId: string): Promise<Pipeline | undefined>;
   findCompanyByUserId(userId: string): Promise<string>;
   create(params: CreatePipelineParams): Promise<Pipeline>;
+  update(params: UpdatePipelineParams): Promise<Pipeline>;
   delete(params: DeletePipelineParams): Promise<void>;
 }
+
+export type UpdatePipelineParams = {
+  pipelineId: string;
+  name?: string;
+  description?: string;
+};
 
 export type CreatePipelineParams = Omit<
   Pipeline,
