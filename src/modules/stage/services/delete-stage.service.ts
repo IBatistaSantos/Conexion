@@ -1,28 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { DetailsPipelineService } from 'src/modules/pipeline/services/details-pipeline.service';
 
-type Request = {
+import { StageRepository } from '../repository/stage.repository';
+
+type DeleteStageServiceRequest = {
   stageId: string;
+  userId: string;
 };
 
 @Injectable()
 export class DeleteStageService {
-  constructor(private readonly prismaService: PrismaService) {}
-  async execute(params: Request) {
-    const { stageId } = params;
+  constructor(
+    @Inject('StageRepository')
+    private readonly stageRepository: StageRepository,
+    private readonly detailsPipelineService: DetailsPipelineService,
+  ) {}
+  async execute(params: DeleteStageServiceRequest) {
+    const { stageId, userId } = params;
 
-    const stageAlreadyExists = await this.prismaService.stage.findUnique({
-      where: {
-        id: stageId,
-      },
-    });
+    const stageAlreadyExists = await this.stageRepository.findById(stageId);
 
     if (!stageAlreadyExists) {
       throw new NotFoundException(`Stage with id ${stageId} not found`);
     }
 
-    await this.prismaService.stage.delete({
-      where: { id: stageId },
+    await this.detailsPipelineService.execute({
+      pipelineId: stageAlreadyExists.pipelineId,
+      userId,
     });
+
+    await this.stageRepository.delete(stageId);
   }
 }

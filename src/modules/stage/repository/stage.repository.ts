@@ -5,6 +5,8 @@ export interface StageRepository {
   findByName(params: FindByNameParams): Promise<Stage>;
   create(params: CreateStageParams): Promise<Stage>;
   update(params: UpdateStageParams): Promise<Stage>;
+  delete(stageId: string): Promise<void>;
+  deleteBulk(stageIds: string[]): Promise<void>;
 }
 
 export type FindByNameParams = {

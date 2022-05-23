@@ -11,6 +11,22 @@ import {
 @Injectable()
 export class PrismaStageRepository implements StageRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  async deleteBulk(stageIds: string[]): Promise<void> {
+    await this.prismaService.stage.deleteMany({
+      where: {
+        id: {
+          in: stageIds,
+        },
+      },
+    });
+  }
+  async delete(stageId: string): Promise<void> {
+    await this.prismaService.stage.delete({
+      where: {
+        id: stageId,
+      },
+    });
+  }
   update(params: UpdateStageParams): Promise<Stage> {
     return this.prismaService.stage.update({
       where: {

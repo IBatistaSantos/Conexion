@@ -1,24 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { DetailsPipelineService } from 'src/modules/pipeline/services/details-pipeline.service';
 
-type Request = {
+import { StageRepository } from '../repository/stage.repository';
+
+type DeleteBulkStageRequest = {
   ids: string;
+  userId: string;
 };
 
 @Injectable()
 export class DeleteBulkStageService {
-  constructor(private readonly prismaService: PrismaService) {}
-  async execute(params: Request) {
-    const { ids } = params;
+  constructor(
+    @Inject('StageRepository')
+    private readonly stageRepository: StageRepository,
+
+    private readonly detailsPipelineService: DetailsPipelineService,
+  ) {}
+
+  async execute(params: DeleteBulkStageRequest) {
+    const { ids, userId } = params;
 
     const stagesToDelete = ids.split(',');
 
-    await this.prismaService.stage.deleteMany({
-      where: {
-        id: {
-          in: stagesToDelete,
-        },
-      },
+    stagesToDelete.forEach(async (id) => {
+      const stage = await this.stageRepository.findById(id);
+
+      if (stage) {
+        await this.detailsPipelineService.execute({
+          pipelineId: stage.pipelineId,
+          userId,
+        });
+        await this.stageRepository.delete(id);
+      }
     });
   }
 }

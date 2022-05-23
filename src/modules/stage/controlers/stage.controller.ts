@@ -55,14 +55,20 @@ export class StageController {
   }
 
   @Delete(':stage_id')
-  async delete(@Param('stage_id') stageId: string) {
-    return await this.deleteStageService.execute({ stageId });
+  @UseGuards(JwtAuthGuard)
+  async delete(@GetUser() user: User, @Param('stage_id') stageId: string) {
+    return await this.deleteStageService.execute({
+      stageId,
+      userId: user.id,
+    });
   }
 
   @Delete()
-  async deleteBulk(@Query('ids') stageIds: string) {
+  @UseGuards(JwtAuthGuard)
+  async deleteBulk(@GetUser() user: User, @Query('ids') stageIds: string) {
     return await this.deleteBulkStageService.execute({
       ids: stageIds,
+      userId: user.id,
     });
   }
 
