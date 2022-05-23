@@ -10,6 +10,22 @@ import {
 @Injectable()
 export class PrismaStageRepository implements StageRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  findById(id: string): Promise<Stage> {
+    return this.prismaService.stage.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        pipeline: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
+      },
+    });
+  }
   create(params: CreateStageParams): Promise<Stage> {
     return this.prismaService.stage.create({
       data: {

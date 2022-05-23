@@ -1,6 +1,7 @@
 import { Stage } from '../entities/stage';
 
 export interface StageRepository {
+  findById(id: string): Promise<Stage>;
   findByName(params: FindByNameParams): Promise<Stage>;
   create(params: CreateStageParams): Promise<Stage>;
 }

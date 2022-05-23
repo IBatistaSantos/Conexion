@@ -64,7 +64,11 @@ export class StageController {
   }
 
   @Get(':stage_id')
-  async get(@Param('stage_id') stageId: string) {
-    return await this.detailsStageService.execute({ stageId });
+  @UseGuards(JwtAuthGuard)
+  async get(@GetUser() user: User, @Param('stage_id') stageId: string) {
+    return await this.detailsStageService.execute({
+      stageId,
+      userId: user.id,
+    });
   }
 }
