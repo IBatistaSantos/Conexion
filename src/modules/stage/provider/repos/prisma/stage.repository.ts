@@ -5,11 +5,22 @@ import {
   CreateStageParams,
   FindByNameParams,
   StageRepository,
+  UpdateStageParams,
 } from 'src/modules/stage/repository/stage.repository';
 
 @Injectable()
 export class PrismaStageRepository implements StageRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  update(params: UpdateStageParams): Promise<Stage> {
+    return this.prismaService.stage.update({
+      where: {
+        id: params.stageId,
+      },
+      data: {
+        name: params.name || undefined,
+      },
+    });
+  }
   findById(id: string): Promise<Stage> {
     return this.prismaService.stage.findUnique({
       where: {

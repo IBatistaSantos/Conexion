@@ -40,14 +40,17 @@ export class StageController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':stage_id')
   async update(
+    @GetUser() user: User,
     @Body() updateStageDto: UpdateStageDto,
     @Param('stage_id') stageId: string,
   ) {
     return await this.updateStageService.execute({
       stageId,
       updateStage: updateStageDto,
+      userId: user.id,
     });
   }
 
