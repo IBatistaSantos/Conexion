@@ -1,0 +1,66 @@
+import { Injectable } from '@nestjs/common';
+import {
+  CreatePipelineParams,
+  FindByNameParams,
+  PipelineRepository,
+} from '../../../repository/pipeline.repository';
+import { PrismaService } from '../../../../prisma/prisma.service';
+import { Pipeline } from './../../../entities/pipeline';
+
+@Injectable()
+export class PrismaPipelineRepository implements PipelineRepository {
+  constructor(private readonly prismaService: PrismaService) {}
+  async findById(pipelineId: string): Promise<Pipeline> {
+    return this.prismaService.pipeline.findUnique({
+      where: {
+        id: pipelineId,
+      },
+      include: {
+        stages: true,
+      },
+    });
+  }
+  async findCompanyByUserId(userId: string): Promise<string | undefined> {
+    try {
+      const user = await this.prismaService.user.findFirst({
+        where: {
+          id: userId,
+        },
+        include: {
+          owner: true,
+          employees: true,
+        },
+      });
+
+      return user.owner ? user.owner.id : user.employees.companyId;
+    } catch {
+      return undefined;
+    }
+  }
+  async findAll(companyId: string): Promise<Pipeline[]> {
+    return this.prismaService.pipeline.findMany({
+      where: {
+        companyId,
+        AND: {
+          active: true,
+        },
+      },
+    });
+  }
+  async findByName(params: FindByNameParams): Promise<Pipeline> {
+    return this.prismaService.pipeline.findFirst({
+      where: {
+        name: params.name,
+        AND: {
+          companyId: params.companyId,
+        },
+      },
+    });
+  }
+
+  async create(params: CreatePipelineParams): Promise<Pipeline> {
+    return this.prismaService.pipeline.create({
+      data: params,
+    });
+  }
+}

@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 
 generator client {
   provider = "prisma-client-js"
@@ -37,6 +36,7 @@ model Company {
 
   employees Employee? @relation("EmployeeCompany")
   invites InviteEmployee? @relation("InviteCompany")
+  pipelines Pipeline? @relation("PipelineCompany")
 
   @@map("companies")
 }
@@ -80,28 +80,30 @@ model InviteEmployee {
 }
 
 
-//model Pipeline {
- // id          String   @id @default(uuid())
-//  name        String   @unique
- // description String?
- // active      Boolean  @default(true)
- // stages      Stage[]
- // createdAt   DateTime @default(now()) @map("created_at")
- // updatedAt   DateTime @default(now()) @map("updated_at")
+model Pipeline {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  active      Boolean  @default(true)
+  stages      Stage[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
+
+  companyId String
+  company   Company? @relation(name: "PipelineCompany", fields: [companyId], references: [id])
 
 
-//@@map("pipelines")
-//}
+@@map("pipelines")
+}
 
 
-//model Stage {
-//  id         String   @id @default(uuid())
-//  name       String
-//  pipelineId String
- // pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
-//createdAt  DateTime @default(now()) @map("created_at")
-//updatedAt  DateTime @default(now()) @map("updated_at")
+model Stage {
+  id         String   @id @default(uuid())
+  name       String
+  pipelineId String
+  pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
 
-
-//  @@map("stages")
-//}
+  @@map("stages")
+}
