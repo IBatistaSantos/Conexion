@@ -39,7 +39,12 @@ export class PrismaPipelineRepository implements PipelineRepository {
         id: pipelineId,
       },
       include: {
-        stages: true,
+        stages: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
     });
   }
