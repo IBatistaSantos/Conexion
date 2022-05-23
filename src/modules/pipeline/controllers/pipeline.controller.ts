@@ -49,9 +49,16 @@ export class PipelineController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':pipeline_id')
-  async delete(@Param('pipeline_id') pipelineId: string) {
-    return this.deletePipelineService.execute(pipelineId);
+  async delete(
+    @GetUser() user: User,
+    @Param('pipeline_id') pipelineId: string,
+  ) {
+    return this.deletePipelineService.execute({
+      pipelineId,
+      userId: user.id,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

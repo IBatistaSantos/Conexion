@@ -6,6 +6,7 @@ export interface PipelineRepository {
   findById(pipelineId: string): Promise<Pipeline | undefined>;
   findCompanyByUserId(userId: string): Promise<string>;
   create(params: CreatePipelineParams): Promise<Pipeline>;
+  delete(params: DeletePipelineParams): Promise<void>;
 }
 
 export type CreatePipelineParams = Omit<
@@ -16,4 +17,8 @@ export type CreatePipelineParams = Omit<
 export type FindByNameParams = {
   name: string;
   companyId: string;
+};
+
+export type DeletePipelineParams = {
+  pipelineId: string;
 };

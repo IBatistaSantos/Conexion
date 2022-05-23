@@ -1,23 +1,43 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { PipelineRepository } from '../repository/pipeline.repository';
 
+type DeletePipelineParams = {
+  pipelineId: string;
+  userId: string;
+};
 @Injectable()
 export class DeletePipelineService {
-  constructor(private readonly prismaService: PrismaService) {}
-  async execute(pipelineId: string) {
-    const pipelineAlreadyExists = await this.prismaService.pipeline.findUnique({
-      where: { id: pipelineId },
-    });
+  constructor(
+    @Inject('PipelineRepository')
+    private readonly pipelineRepository: PipelineRepository,
+  ) {}
+  async execute(params: DeletePipelineParams) {
+    const { pipelineId, userId } = params;
+    const pipeline = await this.pipelineRepository.findById(pipelineId);
 
-    if (!pipelineAlreadyExists) {
-      throw new NotFoundException(`Pipeline with id ${pipelineId} not found`);
+    if (!pipeline) {
+      throw new NotFoundException('Pipeline does not exist');
     }
 
-    await this.prismaService.pipeline.update({
-      where: { id: pipelineId },
-      data: {
-        active: false,
-      },
+    const companyId = await this.pipelineRepository.findCompanyByUserId(userId);
+
+    if (!companyId) {
+      throw new NotFoundException('User does not have a company');
+    }
+
+    if (pipeline.companyId !== companyId) {
+      throw new UnauthorizedException(
+        'User does not have permission to delete this pipeline',
+      );
+    }
+
+    await this.pipelineRepository.delete({
+      pipelineId,
     });
   }
 }

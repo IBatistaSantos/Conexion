@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   CreatePipelineParams,
+  DeletePipelineParams,
   FindByNameParams,
   PipelineRepository,
 } from '../../../repository/pipeline.repository';
@@ -10,6 +11,16 @@ import { Pipeline } from './../../../entities/pipeline';
 @Injectable()
 export class PrismaPipelineRepository implements PipelineRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  async delete(params: DeletePipelineParams): Promise<void> {
+    await this.prismaService.pipeline.update({
+      where: {
+        id: params.pipelineId,
+      },
+      data: {
+        active: false,
+      },
+    });
+  }
   async findById(pipelineId: string): Promise<Pipeline> {
     return this.prismaService.pipeline.findUnique({
       where: {
