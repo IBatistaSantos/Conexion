@@ -13,13 +13,13 @@ export class DealController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@GetUser() user: User, @Body() createDealDto: CreateDealDto) {
-    const userId = user.id;
+    const creatorId = user.id;
     const companyId = user.companyId;
 
     return this.createDealService.execute({
       title: createDealDto.title,
       stageId: createDealDto.stageId,
-      creatorId: userId,
+      creatorId,
       companyId,
       userId: createDealDto.userId,
     });
