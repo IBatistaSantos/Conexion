@@ -21,8 +21,8 @@ model User {
 
    owner Company? @relation("CreatorCompany")
    employees Employee? @relation("EmployeeUser")
-   dealCreator Deal? @relation("DealCreator")
-   DealUser Deal? @relation("DealUser")
+   dealCreator Deal[] @relation("DealCreator")
+   DealUser Deal[] @relation("DealUser")
   @@map("users")
 }
 
@@ -128,4 +128,7 @@ model Deal {
 
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @map("updated_at")
+
+
+  @@map("deals")
 }
