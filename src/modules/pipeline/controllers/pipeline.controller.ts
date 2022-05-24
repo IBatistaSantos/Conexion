@@ -21,6 +21,7 @@ import { DeletePipelineService } from '../services/delete-pipeline.service';
 import { DetailsPipelineService } from '../services/details-pipeline.service';
 import { ListAllPipelineService } from '../services/list-all-pipeline.service';
 import { UpdatePipelineService } from '../services/update-pipeline.service';
+import { ListDealPipelineService } from '../services/list-deal-pipeline.service';
 
 @Controller('api/v1/pipeline')
 export class PipelineController {
@@ -30,6 +31,7 @@ export class PipelineController {
     private deletePipelineService: DeletePipelineService,
     private detailsPipelineService: DetailsPipelineService,
     private listAllPipelines: ListAllPipelineService,
+    private listDealPipelineService: ListDealPipelineService,
   ) {}
 
   @UseGuards(JwtAuthGuard, CompanyGuard)
@@ -80,5 +82,11 @@ export class PipelineController {
   @Get()
   async list(@GetUser() user: User) {
     return this.listAllPipelines.execute(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':pipeline_id/deal')
+  async listDealPipeline(@Param('pipeline_id') pipelineId: string) {
+    return this.listDealPipelineService.execute(pipelineId);
   }
 }

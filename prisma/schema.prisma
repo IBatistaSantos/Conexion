@@ -36,9 +36,9 @@ model Company {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
-  employees Employee? @relation("EmployeeCompany")
+  employees Employee[] @relation("EmployeeCompany")
   invites InviteEmployee? @relation("InviteCompany")
-  pipelines Pipeline? @relation("PipelineCompany")
+  pipelines Pipeline[] @relation("PipelineCompany")
 
   @@map("companies")
 }
