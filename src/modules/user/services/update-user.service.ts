@@ -8,6 +8,7 @@ import {
 import { Encryption } from '../../../shared/providers/encryption/contracts/encryption';
 import { UserRepository } from '../repository';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UpdateUserService {
@@ -24,10 +25,10 @@ export class UpdateUserService {
     password,
     passwordConfirmation,
     userId,
-  }: UpdateUserDto) {
-    const user = await this.userRepository.findById(userId);
+  }: UpdateUserDto): Promise<User> {
+    const userAlreadyExists = await this.userRepository.findById(userId);
 
-    if (!user) {
+    if (!userAlreadyExists) {
       throw new NotFoundException(`User with id ${userId} not found`);
     }
 
@@ -40,20 +41,36 @@ export class UpdateUserService {
     }
 
     if (email) {
-      const userAlreadyExists = await this.userRepository.findByEmail(email);
+      const isEmailAlreadyRegistered = await this.userRepository.findByEmail(
+        email,
+      );
 
-      if (userAlreadyExists && userAlreadyExists.id !== userId) {
+      if (isEmailAlreadyRegistered && isEmailAlreadyRegistered.id !== userId) {
         throw new BadRequestException(
           `User with email ${email} already exists`,
         );
       }
     }
 
-    return this.userRepository.update({
+    const user = await this.userRepository.update({
       name,
       email,
       password,
       userId,
     });
+
+    const companyId = user.owner ? user.owner.id : user.employees.company.id;
+    const companyName = user.owner
+      ? user.owner.name
+      : user.employees.company.name;
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      companyId,
+      companyName,
+    };
   }
 }

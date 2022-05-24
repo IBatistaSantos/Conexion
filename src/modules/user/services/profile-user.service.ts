@@ -16,6 +16,18 @@ export class ProfileUserService {
       throw new NotFoundException(`User with id ${userId} not found`);
     }
 
-    return user;
+    const companyId = user.owner ? user.owner.id : user.employees.company.id;
+    const companyName = user.owner
+      ? user.owner.name
+      : user.employees.company.name;
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      companyId,
+      companyName,
+    };
   }
 }

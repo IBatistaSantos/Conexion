@@ -9,6 +9,6 @@ export class CompanyGuard implements CanActivate {
 
     const user = await this.detailsUserService.execute(request.user.id);
     const companyId = request.body.companyId;
-    return user.owner.id === companyId;
+    return user.companyId === companyId;
   }
 }

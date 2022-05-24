@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PipelineRepository } from '../repository/pipeline.repository';
 
 @Injectable()
@@ -8,13 +8,7 @@ export class ListAllPipelineService {
     private readonly pipelineRepository: PipelineRepository,
   ) {}
 
-  async execute(userId: string) {
-    const companyId = await this.pipelineRepository.findCompanyByUserId(userId);
-
-    if (!companyId) {
-      throw new BadRequestException('User does not have a company');
-    }
-
+  async execute(companyId: string) {
     return this.pipelineRepository.findAll(companyId);
   }
 }

@@ -62,7 +62,7 @@ export class PipelineController {
   ) {
     return this.deletePipelineService.execute({
       pipelineId,
-      userId: user.id,
+      companyId: user.companyId,
     });
   }
 
@@ -81,7 +81,7 @@ export class PipelineController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async list(@GetUser() user: User) {
-    return this.listAllPipelines.execute(user.id);
+    return this.listAllPipelines.execute(user.companyId);
   }
 
   @UseGuards(JwtAuthGuard)

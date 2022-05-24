@@ -28,6 +28,19 @@ export class PrismaUserRepository implements UserRepository {
         email: email || undefined,
         password: password || undefined,
       },
+      include: {
+        owner: true,
+        employees: {
+          include: {
+            company: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
