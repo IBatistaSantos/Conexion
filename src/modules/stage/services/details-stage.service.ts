@@ -4,7 +4,7 @@ import { StageRepository } from '../repository/stage.repository';
 
 type Request = {
   stageId: string;
-  userId: string;
+  companyId: string;
 };
 
 @Injectable()
@@ -16,7 +16,7 @@ export class DetailsStageService {
   ) {}
 
   async execute(params: Request) {
-    const { stageId } = params;
+    const { stageId, companyId } = params;
 
     const stageDetails = await this.stageRepository.findById(stageId);
 
@@ -26,7 +26,7 @@ export class DetailsStageService {
 
     await this.detailsPipelineService.execute({
       pipelineId: stageDetails.pipelineId,
-      userId: params.userId,
+      companyId,
     });
 
     return stageDetails;

@@ -74,7 +74,7 @@ export class PipelineController {
   ) {
     return this.detailsPipelineService.execute({
       pipelineId,
-      userId: user.id,
+      companyId: user.companyId,
     });
   }
 
@@ -86,7 +86,13 @@ export class PipelineController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':pipeline_id/deal')
-  async listDealPipeline(@Param('pipeline_id') pipelineId: string) {
-    return this.listDealPipelineService.execute(pipelineId);
+  async listDealPipeline(
+    @GetUser() user: User,
+    @Param('pipeline_id') pipelineId: string,
+  ) {
+    return this.listDealPipelineService.execute({
+      pipelineId,
+      companyId: user.companyId,
+    });
   }
 }

@@ -5,7 +5,7 @@ import { UpdateStageDto } from '../dtos/update-stage.dto';
 import { StageRepository } from '../repository/stage.repository';
 
 type UpdateStageServiceRequest = {
-  userId: string;
+  companyId: string;
   updateStage: UpdateStageDto;
   stageId: string;
 };
@@ -19,7 +19,7 @@ export class UpdateStageService {
   ) {}
 
   async execute(params: UpdateStageServiceRequest) {
-    const { stageId, updateStage, userId } = params;
+    const { stageId, updateStage, companyId } = params;
 
     const stageAlreadyExists = await this.stageRepository.findById(stageId);
 
@@ -29,7 +29,7 @@ export class UpdateStageService {
 
     const pipeline = await this.detailsPipelineService.execute({
       pipelineId: stageAlreadyExists.pipelineId,
-      userId: userId,
+      companyId,
     });
 
     if (!pipeline) {

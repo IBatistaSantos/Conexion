@@ -9,7 +9,7 @@ import { PipelineRepository } from '../repository/pipeline.repository';
 
 type DetailsPipelineRequest = {
   pipelineId: string;
-  userId: string;
+  companyId: string;
 };
 
 @Injectable()
@@ -20,12 +20,7 @@ export class DetailsPipelineService {
   ) {}
 
   async execute(params: DetailsPipelineRequest) {
-    const { pipelineId, userId } = params;
-    const companyId = await this.pipelineRepository.findCompanyByUserId(userId);
-
-    if (!companyId) {
-      throw new NotFoundException('User does not have a company');
-    }
+    const { pipelineId, companyId } = params;
 
     const pipeline = await this.pipelineRepository.findById(pipelineId);
 

@@ -1,15 +1,36 @@
-import { User } from '../entities/user.entity';
-
 export interface UserRepository {
-  create(params: CreateUser): Promise<User>;
-  findByEmail(email: string): Promise<User | undefined>;
-  findById(id: string): Promise<DetailsResponse | undefined>;
+  create(params: CreateUser): Promise<CreateUserResult>;
+  findByEmail(email: string): Promise<CreateUserResult | undefined>;
+  findById(id: string): Promise<CreateUserResult | undefined>;
   createUserAndCompany(
     params: CreateUserAndCompany,
   ): Promise<ResponseCreateUserAndCompany>;
 
-  update({ name, email, password, userId }: UpdateUser): Promise<User>;
+  update({
+    name,
+    email,
+    password,
+    userId,
+  }: UpdateUser): Promise<CreateUserResult>;
 }
+
+export type CreateUserResult = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  owner?: {
+    id: string;
+    name: string;
+  };
+  employees?: {
+    id: string;
+    company: {
+      id: string;
+      name: string;
+    };
+  };
+};
 
 type CreateUserAndCompany = CreateUser & {
   company: {
@@ -40,10 +61,4 @@ type UpdateUser = {
   email?: string;
   password?: string;
   userId: string;
-};
-
-type DetailsResponse = User & {
-  owner: {
-    id: string;
-  };
 };

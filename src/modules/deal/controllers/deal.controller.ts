@@ -14,7 +14,7 @@ export class DealController {
   @Post()
   async create(@GetUser() user: User, @Body() createDealDto: CreateDealDto) {
     const userId = user.id;
-    const companyId = user.owner ? user.owner.id : user.employees.company.id;
+    const companyId = user.companyId;
 
     return this.createDealService.execute({
       title: createDealDto.title,

@@ -35,7 +35,7 @@ export class StageController {
   @Post()
   async create(@GetUser() user: User, @Body() createStageDto: CreateStageDto) {
     return this.createStagesService.execute({
-      userId: user.id,
+      companyId: user.companyId,
       ...createStageDto,
     });
   }
@@ -50,7 +50,7 @@ export class StageController {
     return await this.updateStageService.execute({
       stageId,
       updateStage: updateStageDto,
-      userId: user.id,
+      companyId: user.companyId,
     });
   }
 
@@ -59,7 +59,7 @@ export class StageController {
   async delete(@GetUser() user: User, @Param('stage_id') stageId: string) {
     return await this.deleteStageService.execute({
       stageId,
-      userId: user.id,
+      companyId: user.companyId,
     });
   }
 
@@ -68,7 +68,7 @@ export class StageController {
   async deleteBulk(@GetUser() user: User, @Query('ids') stageIds: string) {
     return await this.deleteBulkStageService.execute({
       ids: stageIds,
-      userId: user.id,
+      companyId: user.companyId,
     });
   }
 
@@ -77,7 +77,7 @@ export class StageController {
   async get(@GetUser() user: User, @Param('stage_id') stageId: string) {
     return await this.detailsStageService.execute({
       stageId,
-      userId: user.id,
+      companyId: user.companyId,
     });
   }
 }

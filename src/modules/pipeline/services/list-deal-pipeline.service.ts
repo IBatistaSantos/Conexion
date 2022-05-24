@@ -1,6 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PipelineRepository } from '../repository/pipeline.repository';
 
+type ListAllPipelineServiceParams = {
+  companyId: string;
+  pipelineId: string;
+};
 @Injectable()
 export class ListDealPipelineService {
   constructor(
@@ -8,10 +12,12 @@ export class ListDealPipelineService {
     private readonly pipelineRepository: PipelineRepository,
   ) {}
 
-  async execute(pipelineId: string): Promise<any> {
-    const deals = await this.pipelineRepository.findDealByPipelineId(
+  async execute(params: ListAllPipelineServiceParams): Promise<any> {
+    const { pipelineId, companyId } = params;
+    const deals = await this.pipelineRepository.findDealByPipelineId({
       pipelineId,
-    );
+      companyId,
+    });
 
     const dealFormatted = deals.map((deal) => {
       return {

@@ -4,7 +4,7 @@ import { CreateStageDto } from '../dtos/create-stage.dto';
 import { StageRepository } from '../repository/stage.repository';
 
 type CreateStageParams = CreateStageDto & {
-  userId: string;
+  companyId: string;
 };
 @Injectable()
 export class CreateStageService {
@@ -14,11 +14,11 @@ export class CreateStageService {
     private readonly detailsPipelineService: DetailsPipelineService,
   ) {}
   async execute(params: CreateStageParams) {
-    const { pipelineId, name, userId } = params;
+    const { pipelineId, name, companyId } = params;
 
     const pipeline = await this.detailsPipelineService.execute({
       pipelineId,
-      userId,
+      companyId,
     });
 
     if (!pipeline) {

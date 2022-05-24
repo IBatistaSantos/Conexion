@@ -54,6 +54,20 @@ export class AuthenticationService {
   }
 
   async validateUser(payload: any) {
-    return await this.userRepository.findById(payload.userId);
+    const user = await this.userRepository.findById(payload.userId);
+
+    const companyName = user.owner
+      ? user.owner.name
+      : user.employees.company.name;
+
+    const companyId = user.owner ? user.owner.id : user.employees.company.id;
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      companyName,
+      companyId,
+    };
   }
 }

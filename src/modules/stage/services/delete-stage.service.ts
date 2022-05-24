@@ -5,7 +5,7 @@ import { StageRepository } from '../repository/stage.repository';
 
 type DeleteStageServiceRequest = {
   stageId: string;
-  userId: string;
+  companyId: string;
 };
 
 @Injectable()
@@ -16,7 +16,7 @@ export class DeleteStageService {
     private readonly detailsPipelineService: DetailsPipelineService,
   ) {}
   async execute(params: DeleteStageServiceRequest) {
-    const { stageId, userId } = params;
+    const { stageId, companyId } = params;
 
     const stageAlreadyExists = await this.stageRepository.findById(stageId);
 
@@ -26,7 +26,7 @@ export class DeleteStageService {
 
     await this.detailsPipelineService.execute({
       pipelineId: stageAlreadyExists.pipelineId,
-      userId,
+      companyId,
     });
 
     await this.stageRepository.delete(stageId);

@@ -5,7 +5,7 @@ import { StageRepository } from '../repository/stage.repository';
 
 type DeleteBulkStageRequest = {
   ids: string;
-  userId: string;
+  companyId: string;
 };
 
 @Injectable()
@@ -17,7 +17,7 @@ export class DeleteBulkStageService {
   ) {}
 
   async execute(params: DeleteBulkStageRequest) {
-    const { ids, userId } = params;
+    const { ids, companyId } = params;
 
     const stagesToDelete = ids.split(',');
 
@@ -27,7 +27,7 @@ export class DeleteBulkStageService {
       if (stage) {
         await this.detailsPipelineService.execute({
           pipelineId: stage.pipelineId,
-          userId,
+          companyId,
         });
         await this.stageRepository.delete(id);
       }

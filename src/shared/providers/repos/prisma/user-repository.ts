@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { User } from 'src/modules/user/entities/user.entity';
-import { UserRepository } from 'src/modules/user/repository/user.repository';
+import {
+  UserRepository,
+  CreateUserResult,
+} from 'src/modules/user/repository/user.repository';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -16,7 +18,7 @@ export class PrismaUserRepository implements UserRepository {
     email?: string;
     password?: string;
     userId: string;
-  }): Promise<User> {
+  }): Promise<CreateUserResult> {
     return this.prismaService.user.update({
       where: {
         id: userId,
@@ -36,12 +38,26 @@ export class PrismaUserRepository implements UserRepository {
       },
       include: {
         owner: true,
+        employees: {
+          include: {
+            company: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
 
     return user;
   }
-  async create({ name, email, password }: CreateUser): Promise<User> {
+  async create({
+    name,
+    email,
+    password,
+  }: CreateUser): Promise<CreateUserResult> {
     return this.prismaService.user.create({
       data: {
         name,
@@ -51,7 +67,7 @@ export class PrismaUserRepository implements UserRepository {
     });
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<CreateUserResult> {
     return this.prismaService.user.findUnique({
       where: {
         email,

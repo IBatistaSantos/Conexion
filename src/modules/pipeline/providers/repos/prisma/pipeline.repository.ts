@@ -3,6 +3,8 @@ import {
   CreatePipelineParams,
   DeletePipelineParams,
   FindByNameParams,
+  FindDealsByPipelineParams,
+  FindDealsByPipelineResult,
   PipelineRepository,
   UpdatePipelineParams,
 } from '../../../repository/pipeline.repository';
@@ -12,12 +14,19 @@ import { Pipeline } from './../../../entities/pipeline';
 @Injectable()
 export class PrismaPipelineRepository implements PipelineRepository {
   constructor(private readonly prismaService: PrismaService) {}
-
-  async findDealByPipelineId(pipelineId: string): Promise<any> {
+  findDealByPipelineId(
+    params: FindDealsByPipelineParams,
+  ): Promise<FindDealsByPipelineResult[]> {
+    const { pipelineId, companyId } = params;
     return this.prismaService.deal.findMany({
       where: {
         stage: {
           pipelineId,
+          AND: {
+            pipeline: {
+              companyId,
+            },
+          },
         },
       },
       include: {
@@ -46,6 +55,7 @@ export class PrismaPipelineRepository implements PipelineRepository {
       },
     });
   }
+
   async update(params: UpdatePipelineParams): Promise<Pipeline> {
     return this.prismaService.pipeline.update({
       where: {

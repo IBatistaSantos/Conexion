@@ -6,7 +6,7 @@ export interface PipelineRepository {
   findById(pipelineId: string): Promise<Pipeline | undefined>;
   findCompanyByUserId(userId: string): Promise<string>;
   findDealByPipelineId(
-    pipelineId: string,
+    params: FindDealsByPipelineParams,
   ): Promise<FindDealsByPipelineResult[]>;
   create(params: CreatePipelineParams): Promise<Pipeline>;
   update(params: UpdatePipelineParams): Promise<Pipeline>;
@@ -60,4 +60,9 @@ export type FindDealsByPipelineResult = {
     name: string;
     id: string;
   };
+};
+
+export type FindDealsByPipelineParams = {
+  pipelineId: string;
+  companyId: string;
 };
