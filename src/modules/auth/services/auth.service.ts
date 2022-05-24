@@ -31,6 +31,14 @@ export class AuthenticationService {
       throw new BadRequestException(`Credentials invalid`);
     }
 
+    const companyName = userAlreadyExists.owner
+      ? userAlreadyExists.owner.name
+      : userAlreadyExists.employees.company.name;
+
+    const companyId = userAlreadyExists.owner
+      ? userAlreadyExists.owner.id
+      : userAlreadyExists.employees.company.id;
+
     return {
       accessToken: this.jwtService.sign({
         userId: userAlreadyExists.id,
@@ -39,6 +47,8 @@ export class AuthenticationService {
         id: userAlreadyExists.id,
         email: userAlreadyExists.email,
         name: userAlreadyExists.name,
+        companyName,
+        companyId,
       },
     };
   }

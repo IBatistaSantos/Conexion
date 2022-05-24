@@ -56,6 +56,19 @@ export class PrismaUserRepository implements UserRepository {
       where: {
         email,
       },
+      include: {
+        owner: {},
+        employees: {
+          include: {
+            company: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
