@@ -21,6 +21,8 @@ model User {
 
    owner Company? @relation("CreatorCompany")
    employees Employee? @relation("EmployeeUser")
+   dealCreator Deal? @relation("DealCreator")
+   DealUser Deal? @relation("DealUser")
   @@map("users")
 }
 
@@ -105,5 +107,25 @@ model Stage {
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @default(now()) @map("updated_at")
 
+  deals Deal[] @relation(name: "DealStage")
+
   @@map("stages")
+}
+
+
+model Deal {
+  id          String   @id @default(uuid())
+  title        String  
+ 
+  stageId String
+  stage   Stage? @relation(name: "DealStage", fields: [stageId], references: [id])
+
+  creator_id String
+  creator   User? @relation(name: "DealCreator", fields: [creator_id], references: [id])
+
+  userId String
+  user   User? @relation(name: "DealUser", fields: [userId], references: [id])
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("updated_at")
 }
