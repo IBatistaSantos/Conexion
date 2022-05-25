@@ -1,4 +1,5 @@
 export interface ProductRepository {
+  findById(productId: string): Promise<any>;
   findByCode(params: FindByCodeAndCompanyId): Promise<any>;
   create(params: CreateProductParams): Promise<any>;
 }
