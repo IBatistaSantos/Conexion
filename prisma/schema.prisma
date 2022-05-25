@@ -15,7 +15,6 @@ model User {
   email    String @unique
   password String
 
-
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
@@ -43,6 +42,7 @@ model Company {
   invites InviteEmployee[] @relation("InviteCompany")
   pipelines Pipeline[] @relation("PipelineCompany")
   persons Person[] @relation("CompanyPerson")
+  products Product[] @relation("CompanyProduct")
 
   @@map("companies")
 }
@@ -161,5 +161,41 @@ model Person {
 
   @@map("persons")
 }
+
+
+model Product {
+  id   String @id @default(uuid())
+  name String
+  code String @unique
+  description String?
+  category String
+  
+  companyId String
+  company Company @relation(name: "CompanyProduct", fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  prices Price[] @relation(name: "ProductPrice")
+ 
+  @@map("products")
+}
+
+
+model Price {
+  id   String @id @default(uuid())
+    price Float
+  currency String
+  cost Float
+  productId String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  product Product @relation(name: "ProductPrice", fields: [productId], references: [id])
+
+  @@map("prices")
+}
+
+
 
 

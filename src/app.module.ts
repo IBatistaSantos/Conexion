@@ -12,6 +12,7 @@ import { EmployeeModule } from './modules/employee/employee.module';
 import { PersonModule } from './modules/person/person.module';
 import { PipelineModule } from './modules/pipeline/pipeline.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
+import { ProductModule } from './modules/product/product.module';
 import { StageModule } from './modules/stage/stage.module';
 import { UserModule } from './modules/user/user.module';
 
@@ -31,6 +32,7 @@ import { UserModule } from './modules/user/user.module';
     StageModule,
     DealModule,
     PersonModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [],
