@@ -23,6 +23,9 @@ model User {
    employees Employee? @relation("EmployeeUser")
    dealCreator Deal[] @relation("DealCreator")
    DealUser Deal[] @relation("DealUser")
+   creatorPerson Person[] @relation("CreatorPerson")
+
+  
   @@map("users")
 }
 
@@ -37,8 +40,9 @@ model Company {
   updatedAt DateTime @default(now()) @map("updated_at")
 
   employees Employee[] @relation("EmployeeCompany")
-  invites InviteEmployee? @relation("InviteCompany")
+  invites InviteEmployee[] @relation("InviteCompany")
   pipelines Pipeline[] @relation("PipelineCompany")
+  persons Person[] @relation("CompanyPerson")
 
   @@map("companies")
 }
@@ -132,3 +136,24 @@ model Deal {
 
   @@map("deals")
 }
+
+
+model Person {
+  id   String @id @default(uuid())
+  name String
+  email String
+
+  owner_id String @map("ownerId")
+  companyId String
+  
+  
+  owner User @relation(name: "CreatorPerson", fields: [owner_id], references: [id])
+  company Company @relation(name: "CompanyPerson", fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("persons")
+}
+
+
