@@ -9,6 +9,23 @@ import {
 @Injectable()
 export class PrismaProductRepository implements ProductRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  findAll(companyId: string): Promise<any> {
+    return this.prismaService.product.findMany({
+      where: {
+        companyId,
+      },
+      include: {
+        prices: {
+          select: {
+            id: true,
+            cost: true,
+            currency: true,
+            price: true,
+          },
+        },
+      },
+    });
+  }
   findById(productId: string): Promise<any> {
     return this.prismaService.product.findUnique({
       where: {

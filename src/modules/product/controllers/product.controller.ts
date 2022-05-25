@@ -5,13 +5,35 @@ import { GetUser } from 'src/shared/decorator/get-user.decorator';
 import { CreateProductDto } from '../dtos/create-product.dto';
 import { CreateProductService } from '../services/create-product.service';
 import { DetailsProductService } from '../services/details-product.service';
+import { FindAllProductService } from '../services/find-all-product.service';
 
 @Controller('api/v1/products')
 export class ProductController {
   constructor(
     private readonly createProductService: CreateProductService,
     private readonly detailsProductService: DetailsProductService,
+    private readonly listAllProducts: FindAllProductService,
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':productId')
+  async findById(
+    @GetUser() user: User,
+    @Param('productId') productId: string,
+  ): Promise<any> {
+    return this.detailsProductService.execute({
+      productId,
+      companyId: user.companyId,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async listAll(@GetUser() user: User): Promise<any> {
+    return this.listAllProducts.execute({
+      companyId: user.companyId,
+    });
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -25,18 +47,6 @@ export class ProductController {
       description: productDto.description,
       name: productDto.name,
       prices: productDto.prices,
-      companyId: user.companyId,
-    });
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get(':productId')
-  async findById(
-    @GetUser() user: User,
-    @Param('productId') productId: string,
-  ): Promise<any> {
-    return this.detailsProductService.execute({
-      productId,
       companyId: user.companyId,
     });
   }
