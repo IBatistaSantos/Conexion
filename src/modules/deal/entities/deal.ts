@@ -17,4 +17,8 @@ export type Deal = {
     name: string;
     id: string;
   };
+  person: {
+    id: string;
+    name: string;
+  };
 };

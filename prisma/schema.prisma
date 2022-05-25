@@ -130,6 +130,9 @@ model Deal {
   userId String
   user   User? @relation(name: "DealUser", fields: [userId], references: [id])
 
+  personId String? @map("person_id")
+  person Person? @relation(name: "DealPerson", fields: [personId], references: [id])
+
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @map("updated_at")
 
@@ -149,6 +152,9 @@ model Person {
   
   owner User @relation(name: "CreatorPerson", fields: [owner_id], references: [id])
   company Company @relation(name: "CompanyPerson", fields: [companyId], references: [id])
+
+
+  deals Deal[] @relation(name: "DealPerson")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")

@@ -30,13 +30,14 @@ export class PrismaDealRepository implements DealRepository {
   }
 
   async create(params: CreateDealParams): Promise<any> {
-    const { title, stageId, userId, creator_id } = params;
+    const { title, stageId, userId, creator_id, personId } = params;
     return this.prismaService.deal.create({
       data: {
         title,
         stageId,
         creator_id,
         userId,
+        personId: personId || undefined,
       },
       include: {
         stage: {
@@ -52,6 +53,12 @@ export class PrismaDealRepository implements DealRepository {
           select: {
             name: true,
             id: true,
+          },
+        },
+        person: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },

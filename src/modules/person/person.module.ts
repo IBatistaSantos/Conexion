@@ -16,5 +16,6 @@ import { UpdatePersonService } from './services/update-person.service';
     DeletePersonService,
     { provide: 'PersonRepository', useClass: PrismaPersonRepository },
   ],
+  exports: [DetailsPersonService],
 })
 export class PersonModule {}

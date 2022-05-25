@@ -10,4 +10,8 @@ export class CreateDealDto {
   @IsOptional()
   @IsNotEmpty()
   userId: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  personId: string;
 }

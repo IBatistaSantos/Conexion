@@ -17,11 +17,9 @@ export class DealController {
     const companyId = user.companyId;
 
     return this.createDealService.execute({
-      title: createDealDto.title,
-      stageId: createDealDto.stageId,
       creatorId,
       companyId,
-      userId: createDealDto.userId,
+      ...createDealDto,
     });
   }
 }
