@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,13 +16,13 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
-   owner Company? @relation("CreatorCompany")
-   employees Employee? @relation("EmployeeUser")
-   dealCreator Deal[] @relation("DealCreator")
-   DealUser Deal[] @relation("DealUser")
-   creatorPerson Person[] @relation("CreatorPerson")
+  owner         Company?  @relation("CreatorCompany")
+  employees     Employee? @relation("EmployeeUser")
+  dealCreator   Deal[]    @relation("DealCreator")
+  DealUser      Deal[]    @relation("DealUser")
+  creatorPerson Person[]  @relation("CreatorPerson")
 
-  
+
   @@map("users")
 }
 
@@ -32,31 +30,31 @@ model Company {
   id   String @id @default(uuid())
   name String
 
-  ownerId String @map("owner_id") @unique
+  ownerId String @unique @map("owner_id")
   owner   User?  @relation(name: "CreatorCompany", fields: [ownerId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
-  employees Employee[] @relation("EmployeeCompany")
-  invites InviteEmployee[] @relation("InviteCompany")
-  pipelines Pipeline[] @relation("PipelineCompany")
-  persons Person[] @relation("CompanyPerson")
-  products Product[] @relation("CompanyProduct")
+  employees           Employee[]           @relation("EmployeeCompany")
+  invites             InviteEmployee[]     @relation("InviteCompany")
+  pipelines           Pipeline[]           @relation("PipelineCompany")
+  persons             Person[]             @relation("CompanyPerson")
+  products            Product[]            @relation("CompanyProduct")
+  vtex_authentication Vtex_Authentication? @relation("VtexAuthenticationCompany")
 
   @@map("companies")
 }
 
-
 model Employee {
-  id   String @id @default(uuid())
-  userId String
-  user   User? @relation(name: "EmployeeUser", fields: [userId], references: [id])
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User?  @relation(name: "EmployeeUser", fields: [userId], references: [id])
 
-  companyId String @map("company_id")
+  companyId String   @map("company_id")
   company   Company? @relation(name: "EmployeeCompany", fields: [companyId], references: [id])
 
-  active Boolean @default(true)
+  active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
@@ -70,21 +68,20 @@ enum StatusInvite {
 }
 
 model InviteEmployee {
-  id   String @id @default(uuid())
-  name String
+  id    String @id @default(uuid())
+  name  String
   email String @unique
   code  String @unique
 
   companyId String
   company   Company? @relation(name: "InviteCompany", fields: [companyId], references: [id])
 
-  status StatusInvite @default(PENDING)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+  status    StatusInvite @default(PENDING)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @default(now()) @map("updated_at")
 
   @@map("invite_employees")
 }
-
 
 model Pipeline {
   id          String   @id @default(uuid())
@@ -102,7 +99,6 @@ model Pipeline {
   @@map("pipelines")
 }
 
-
 model Stage {
   id         String   @id @default(uuid())
   name       String
@@ -116,41 +112,39 @@ model Stage {
   @@map("stages")
 }
 
-
 model Deal {
-  id          String   @id @default(uuid())
-  title        String  
- 
+  id    String @id @default(uuid())
+  title String
+
   stageId String
   stage   Stage? @relation(name: "DealStage", fields: [stageId], references: [id])
 
   creator_id String
-  creator   User? @relation(name: "DealCreator", fields: [creator_id], references: [id])
+  creator    User?  @relation(name: "DealCreator", fields: [creator_id], references: [id])
 
   userId String
-  user   User? @relation(name: "DealUser", fields: [userId], references: [id])
+  user   User?  @relation(name: "DealUser", fields: [userId], references: [id])
 
   personId String? @map("person_id")
-  person Person? @relation(name: "DealPerson", fields: [personId], references: [id])
+  person   Person? @relation(name: "DealPerson", fields: [personId], references: [id])
 
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 
 
   @@map("deals")
 }
 
-
 model Person {
-  id   String @id @default(uuid())
-  name String
+  id    String @id @default(uuid())
+  name  String
   email String
 
-  owner_id String @map("ownerId")
+  owner_id  String @map("ownerId")
   companyId String
-  
-  
-  owner User @relation(name: "CreatorPerson", fields: [owner_id], references: [id])
+
+
+  owner   User    @relation(name: "CreatorPerson", fields: [owner_id], references: [id])
   company Company @relation(name: "CompanyPerson", fields: [companyId], references: [id])
 
 
@@ -162,31 +156,29 @@ model Person {
   @@map("persons")
 }
 
-
 model Product {
-  id   String @id @default(uuid())
-  name String
-  code String @unique
+  id          String  @id @default(uuid())
+  name        String
+  code        String  @unique
   description String?
-  category String
-  
+  category    String
+
   companyId String
-  company Company @relation(name: "CompanyProduct", fields: [companyId], references: [id])
+  company   Company @relation(name: "CompanyProduct", fields: [companyId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
   prices Price[] @relation(name: "ProductPrice")
- 
+
   @@map("products")
 }
 
-
 model Price {
-  id   String @id @default(uuid())
-    price Float
-  currency String
-  cost Float
+  id        String   @id @default(uuid())
+  price     Float
+  currency  String
+  cost      Float
   productId String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -196,6 +188,20 @@ model Price {
   @@map("prices")
 }
 
+model Vtex_Authentication {
+  id       String @id @default(uuid())
+  appKey   String
+  appToken String
+
+  companyId String  @unique
+  company   Company @relation(name: "VtexAuthenticationCompany", fields: [companyId], references: [id])
 
 
+  integration_order   Boolean
+  integration_product Boolean
 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("vtex_authentications")
+}
