@@ -16,5 +16,7 @@ import { FindAllProductService } from './services/find-all-product.service';
     { provide: 'ProductRepository', useClass: PrismaProductRepository },
     { provide: 'PriceRepository', useClass: PrismaPriceRepository },
   ],
+
+  exports: [CreateProductService],
 })
 export class ProductModule {}
