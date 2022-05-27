@@ -8,7 +8,7 @@ import { ProductModule } from '../../../modules/product/product.module';
 import { VtexController } from './controllers/vtex.controller';
 import { PrismaVtexRepository } from './providers/repos/prisma/vtex.repository';
 import { ConnectVtexService } from './services/connect-vtex.service';
-import { SyncProductVtexConsumer } from './services/sync-integrated-queue';
+import { SyncProductVtexConsumer } from './services/sync-product-vtex.consumer';
 import { SyncProductVtexService } from './services/sync-product-vtex.service';
 
 @Module({
