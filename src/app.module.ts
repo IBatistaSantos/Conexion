@@ -23,6 +23,7 @@ import { UserModule } from './modules/user/user.module';
       isGlobal: true,
       load: [configuration],
     }),
+
     MailerModule.forRoot(mailerConfig),
     PrismaModule,
     UserModule,

@@ -89,12 +89,9 @@ export class VtexApi {
         success: productsVtex.status === 200,
       };
     } catch (error) {
-      const { response } = error;
-
       return {
         data: error.data,
-        status: response.status,
-        success: response.status === 200,
+        success: true,
       };
     }
   }

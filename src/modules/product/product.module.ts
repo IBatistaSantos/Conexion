@@ -5,6 +5,7 @@ import { PrismaProductRepository } from './providers/repos/prisma/product.reposi
 import { CreateProductService } from './services/create-product.service';
 import { DetailsProductService } from './services/details-product.service';
 import { FindAllProductService } from './services/find-all-product.service';
+import { FindByCodeProductService } from './services/find-by-code.service';
 
 @Module({
   imports: [],
@@ -13,10 +14,11 @@ import { FindAllProductService } from './services/find-all-product.service';
     CreateProductService,
     DetailsProductService,
     FindAllProductService,
+    FindByCodeProductService,
     { provide: 'ProductRepository', useClass: PrismaProductRepository },
     { provide: 'PriceRepository', useClass: PrismaPriceRepository },
   ],
 
-  exports: [CreateProductService],
+  exports: [CreateProductService, FindByCodeProductService],
 })
 export class ProductModule {}
