@@ -14,4 +14,8 @@ export class CreateDealDto {
   @IsOptional()
   @IsNotEmpty()
   personId: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  productId: string;
 }

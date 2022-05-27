@@ -17,6 +17,7 @@ export type CreateDealParams = {
   creator_id: string;
   userId: string;
   personId?: string;
+  productId?: string;
 };
 
 export type HasStageAvailableParams = {

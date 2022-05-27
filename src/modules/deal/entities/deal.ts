@@ -21,4 +21,15 @@ export type Deal = {
     id: string;
     name: string;
   };
+  product: {
+    id: string;
+    code: string;
+    name: string;
+    prices: {
+      id: string;
+      price: number;
+      currency: string;
+      cost: number;
+    };
+  };
 };

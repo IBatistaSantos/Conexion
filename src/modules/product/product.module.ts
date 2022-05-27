@@ -19,6 +19,10 @@ import { FindByCodeProductService } from './services/find-by-code.service';
     { provide: 'PriceRepository', useClass: PrismaPriceRepository },
   ],
 
-  exports: [CreateProductService, FindByCodeProductService],
+  exports: [
+    CreateProductService,
+    FindByCodeProductService,
+    DetailsProductService,
+  ],
 })
 export class ProductModule {}

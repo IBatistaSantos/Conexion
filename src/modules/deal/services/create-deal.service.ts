@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DetailsPersonService } from 'src/modules/person/services/detail-person.service';
+import { DetailsPersonService } from '../../../modules/person/services/detail-person.service';
+import { DetailsProductService } from '../../../modules/product/services/details-product.service';
 import { DealRepository } from '../repository/deal.repository';
 
 type CreateCreateDealServiceParams = {
@@ -9,6 +10,7 @@ type CreateCreateDealServiceParams = {
   userId?: string;
   companyId: string;
   personId?: string;
+  productId?: string;
 };
 
 @Injectable()
@@ -18,21 +20,19 @@ export class CreateDealService {
     private readonly dealRepository: DealRepository,
 
     private readonly detailsPersonService: DetailsPersonService,
+    private readonly detailsProductService: DetailsProductService,
   ) {}
 
   async execute(params: CreateCreateDealServiceParams): Promise<any> {
-    const { title, stageId, creatorId, userId, companyId, personId } = params;
-
-    if (userId) {
-      const hasCompanyUser = await this.dealRepository.hasCompany({
-        companyId,
-        userId,
-      });
-
-      if (!hasCompanyUser) {
-        throw new Error('User not in company');
-      }
-    }
+    const {
+      title,
+      stageId,
+      creatorId,
+      userId,
+      companyId,
+      personId,
+      productId,
+    } = params;
 
     if (personId) {
       const person = await this.detailsPersonService.execute({
@@ -42,6 +42,17 @@ export class CreateDealService {
 
       if (person.companyId !== companyId) {
         throw new Error('Person not in company');
+      }
+    }
+
+    if (productId) {
+      const product = await this.detailsProductService.execute({
+        productId,
+        companyId,
+      });
+
+      if (product.companyId !== companyId) {
+        throw new Error('Product not in company');
       }
     }
 
@@ -60,6 +71,7 @@ export class CreateDealService {
       title,
       userId: userId ?? creatorId,
       personId,
+      productId,
     });
 
     return {
@@ -79,6 +91,19 @@ export class CreateDealService {
         person: {
           id: deal.person.id,
           name: deal.person.name,
+        },
+      }),
+      ...(productId && {
+        product: {
+          id: deal.product.id,
+          code: deal.product.code,
+          name: deal.product.name,
+          prices: {
+            id: deal.product.prices.id,
+            price: deal.product.prices.price,
+            cost: deal.product.prices.cost,
+            currency: deal.product.prices.currency,
+          },
         },
       }),
     };
