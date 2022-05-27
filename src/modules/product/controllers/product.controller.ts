@@ -6,6 +6,7 @@ import { CreateProductDto } from '../dtos/create-product.dto';
 import { CreateProductService } from '../services/create-product.service';
 import { DetailsProductService } from '../services/details-product.service';
 import { FindAllProductService } from '../services/find-all-product.service';
+import { FindDealProductService } from '../services/find-deal-product.service';
 
 @Controller('api/v1/products')
 export class ProductController {
@@ -13,6 +14,7 @@ export class ProductController {
     private readonly createProductService: CreateProductService,
     private readonly detailsProductService: DetailsProductService,
     private readonly listAllProducts: FindAllProductService,
+    private readonly findDealProductService: FindDealProductService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -32,6 +34,18 @@ export class ProductController {
   async listAll(@GetUser() user: User): Promise<any> {
     return this.listAllProducts.execute({
       companyId: user.companyId,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':productId/deals')
+  async listDealProduct(
+    @GetUser() user: User,
+    @Param('productId') productId: string,
+  ): Promise<any> {
+    return this.findDealProductService.execute({
+      companyId: user.companyId,
+      productId,
     });
   }
 
