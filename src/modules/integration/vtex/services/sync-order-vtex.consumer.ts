@@ -7,10 +7,15 @@ import { CreateDealService } from '../../../../modules/deal/services/create-deal
 import { CreateProductService } from '../../../..//modules/product/services/create-product.service';
 import { FindByCodeProductService } from '../../../..//modules/product/services/find-by-code.service';
 
-import { VtexApi } from '../entity/vtex-api';
 import { CreatePersonService } from 'src/modules/person/services/create-person.service';
 import { FindByEmailPersonService } from 'src/modules/person/services/find-person-by-email.service';
 
+type FindOrCreatePersonFromDeal = {
+  email: string;
+  order: any;
+  userId: string;
+  companyId: string;
+};
 @Processor('vtex-orders')
 @Injectable()
 export class SyncOrderVtexConsumer {
@@ -32,10 +37,38 @@ export class SyncOrderVtexConsumer {
   @Process()
   async process(job: Job) {
     const { companyId, order, appKey, appToken, userId, stageId } = job.data;
-    let productId: string;
-    let personId: string;
+
     const keyOrder = `${companyId}-${order.orderId}`;
 
+    const productId = await this.findOrCreateProductFromDeal(order, companyId);
+
+    const [emailFormatted] = order.clientProfileData.email.split('-');
+
+    const personId = await this.findOrCreatePersonFromDeal({
+      email: emailFormatted,
+      companyId,
+      order,
+      userId,
+    });
+
+    const createDealParams = {
+      title: `Pedido Vtex: ${order.orderId}`,
+      stageId,
+      creatorId: userId,
+      companyId,
+      personId,
+      productId,
+    };
+
+    await this.createDealService.execute(createDealParams);
+
+    await this.cacheManager.set(keyOrder, true);
+  }
+
+  private async findOrCreateProductFromDeal(
+    order: any,
+    companyId: string,
+  ): Promise<string> {
     const product = order.items[0];
 
     const productFound = await this.findProductService.execute({
@@ -56,41 +89,30 @@ export class SyncOrderVtexConsumer {
         },
       });
 
-      productId = created.id;
-    } else {
-      productId = productFound.id;
+      return created.id;
     }
 
-    const [emailFormatted] = order.clientProfileData.email.split('-');
+    return productFound.id;
+  }
 
+  private async findOrCreatePersonFromDeal(
+    params: FindOrCreatePersonFromDeal,
+  ): Promise<string> {
+    const { email, order, userId, companyId } = params;
     const personFound = await this.findPersonService.execute({
-      email: emailFormatted,
+      email,
     });
 
     if (!personFound) {
       const createdPerson = await this.createPersonService.execute({
-        email: emailFormatted,
+        email,
         name: `${order.clientProfileData.firstName} ${order.clientProfileData.lastName}`,
         userId,
         companyId,
       });
 
-      personId = createdPerson.id;
-    } else {
-      personId = personFound.id;
+      return createdPerson.id;
     }
-
-    const createDealParams = {
-      title: `Pedido Vtex: ${order.orderId}`,
-      stageId,
-      creatorId: userId,
-      companyId,
-      personId,
-      productId,
-    };
-
-    await this.createDealService.execute(createDealParams);
-
-    await this.cacheManager.set(keyOrder, true);
+    return personFound.id;
   }
 }
