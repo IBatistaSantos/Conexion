@@ -1,5 +1,6 @@
 export interface PersonRepository {
   findById(personId: string): Promise<any>;
+  findByEmail(email: string): Promise<any>;
   create(params: CreatePersonParams): Promise<any>;
   update(params: UpdatePersonParams): Promise<any>;
   delete(params: DeletePersonParams): Promise<any>;

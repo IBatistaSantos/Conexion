@@ -11,6 +11,13 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 @Injectable()
 export class PrismaPersonRepository implements PersonRepository {
   constructor(private readonly prismaService: PrismaService) {}
+  findByEmail(email: string): Promise<any> {
+    return this.prismaService.person.findFirst({
+      where: {
+        email,
+      },
+    });
+  }
   delete(params: DeletePersonParams): Promise<any> {
     return this.prismaService.person.deleteMany({
       where: {

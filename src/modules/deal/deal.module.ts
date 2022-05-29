@@ -12,5 +12,6 @@ import { CreateDealService } from './services/create-deal.service';
     CreateDealService,
     { provide: 'DealRepository', useClass: PrismaDealRepository },
   ],
+  exports: [CreateDealService],
 })
 export class DealModule {}

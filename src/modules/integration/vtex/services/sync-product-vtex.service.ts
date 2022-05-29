@@ -66,26 +66,37 @@ export class SyncProductVtexService {
       }
 
       for (const product of productsAtVtex) {
-        const keyProduct = `${product}_${companyId}`;
-        const skuAlreadyIntegrated =
-          await this.findByCodeProductService.execute({
+        const detailsProduct = await vtexApi.getProductAndSkuByProductId(
+          product,
+        );
+
+        if (!detailsProduct.success) return;
+
+        const { skus } = detailsProduct.data;
+
+        for (const productskus of skus) {
+          const keyProduct = `${productskus.sku}_${companyId}`;
+
+          const skuAlreadyIntegrated =
+            await this.findByCodeProductService.execute({
+              companyId,
+              code: product,
+            });
+
+          if (skuAlreadyIntegrated) {
+            await this.cacheManager.set(keyProduct, true);
+            continue;
+          }
+
+          await this.productVtexQueue.add({
             companyId,
-            code: product,
+            product,
+            appKey: authentication.appKey,
+            appToken: authentication.appToken,
           });
 
-        if (skuAlreadyIntegrated) {
-          await this.cacheManager.set(keyProduct, true);
           continue;
         }
-
-        await this.productVtexQueue.add({
-          companyId,
-          product,
-          appKey: authentication.appKey,
-          appToken: authentication.appToken,
-        });
-
-        continue;
       }
 
       _from += 50;

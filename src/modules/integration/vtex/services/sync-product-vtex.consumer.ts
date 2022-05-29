@@ -22,8 +22,6 @@ export class SyncProductVtexConsumer {
   async process(job: Job) {
     const { companyId, product, appKey, appToken } = job.data;
 
-    const keyProduct = `${product}_${companyId}`;
-
     const vtexApi = new VtexApi(appKey, appToken, this.httpService);
 
     const detailsProduct = await vtexApi.getProductAndSkuByProductId(product);
@@ -44,7 +42,7 @@ export class SyncProductVtexConsumer {
 
     for (const productskus of skus) {
       const { sku: skuId, skuname: skuName } = productskus;
-
+      const keyProduct = `${skuId}_${companyId}`;
       const priceSku = await vtexApi.getPriceBySkuId(skuId);
 
       if (!priceSku.success) {

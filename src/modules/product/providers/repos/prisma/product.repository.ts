@@ -87,8 +87,9 @@ export class PrismaProductRepository implements ProductRepository {
       },
     });
   }
-  create(params: CreateProductParams): Promise<any> {
+  async create(params: CreateProductParams): Promise<any> {
     const { name, category, companyId, description, code } = params;
+
     return this.prismaService.product.create({
       data: {
         name,

@@ -1,5 +1,11 @@
 import { HttpService } from '@nestjs/axios';
 
+type QueryFindOrderVtex = {
+  since: string;
+  today: string;
+  page: number;
+  perPage: number;
+};
 export class VtexApi {
   constructor(
     private readonly appKey: string,
@@ -35,6 +41,57 @@ export class VtexApi {
     };
   }
 
+  async getOrders(params: QueryFindOrderVtex): Promise<any> {
+    try {
+      const { since, today, page, perPage } = params;
+      const urlOrders = `${this.getBaseUrl(this.appKey)}oms/pvt/orders`;
+
+      const ordersVtex = await this.httpService
+        .get(urlOrders, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-VTEX-API-AppKey': this.appKey,
+            'X-VTEX-API-AppToken': this.appToken,
+          },
+          params: {
+            f_creationDate: `creationDate:[${since} TO ${today}]`,
+            page,
+            per_page: perPage,
+          },
+        })
+        .toPromise();
+
+      return {
+        data: ordersVtex.data,
+        status: ordersVtex.status,
+        success: ordersVtex.status === 200,
+      };
+    } catch (error) {}
+  }
+
+  async getOrderById(orderId: string): Promise<any> {
+    try {
+      const urlOrders = `${this.getBaseUrl(
+        this.appKey,
+      )}oms/pvt/orders/${orderId}`;
+
+      const ordersVtex = await this.httpService
+        .get(urlOrders, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-VTEX-API-AppKey': this.appKey,
+            'X-VTEX-API-AppToken': this.appToken,
+          },
+        })
+        .toPromise();
+
+      return {
+        data: ordersVtex.data,
+        status: ordersVtex.status,
+        success: ordersVtex.status === 200,
+      };
+    } catch (error) {}
+  }
   async getProductAndSkuByProductId(productId: string): Promise<any> {
     try {
       const urlProduct = `${this.getBaseUrl(

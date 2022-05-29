@@ -4,6 +4,7 @@ import { PrismaPersonRepository } from './providers/repos/prisma/person.reposito
 import { CreatePersonService } from './services/create-person.service';
 import { DeletePersonService } from './services/delete-person.service';
 import { DetailsPersonService } from './services/detail-person.service';
+import { FindByEmailPersonService } from './services/find-person-by-email.service';
 import { UpdatePersonService } from './services/update-person.service';
 
 @Module({
@@ -14,8 +15,13 @@ import { UpdatePersonService } from './services/update-person.service';
     CreatePersonService,
     UpdatePersonService,
     DeletePersonService,
+    FindByEmailPersonService,
     { provide: 'PersonRepository', useClass: PrismaPersonRepository },
   ],
-  exports: [DetailsPersonService],
+  exports: [
+    DetailsPersonService,
+    FindByEmailPersonService,
+    CreatePersonService,
+  ],
 })
 export class PersonModule {}

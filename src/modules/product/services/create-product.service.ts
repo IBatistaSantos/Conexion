@@ -5,7 +5,7 @@ import { ProductRepository } from '../repository/product.repository';
 type CreateProductServiceParams = {
   name: string;
   code: string;
-  description: string;
+  description?: string;
   category: string;
   companyId: string;
   prices: {
