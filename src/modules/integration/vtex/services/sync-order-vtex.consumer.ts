@@ -31,9 +31,9 @@ export class SyncOrderVtexConsumer {
 
   @Process()
   async process(job: Job) {
-    const { companyId, order, appKey, appToken, userId } = job.data;
-    let productId;
-    let personId;
+    const { companyId, order, appKey, appToken, userId, stageId } = job.data;
+    let productId: string;
+    let personId: string;
     const keyOrder = `${companyId}-${order.orderId}`;
 
     const product = order.items[0];
@@ -82,7 +82,7 @@ export class SyncOrderVtexConsumer {
 
     const createDealParams = {
       title: `Pedido Vtex: ${order.orderId}`,
-      stageId: 'a0739581-2f13-401e-a76a-628716b0b2c7',
+      stageId,
       creatorId: userId,
       companyId,
       personId,

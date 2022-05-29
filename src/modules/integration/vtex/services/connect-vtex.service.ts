@@ -1,4 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { DetailsStageService } from '../../../../modules/stage/services/details-stage.service';
 import { VtexRepositorys } from '../repository/vtex-authentication.repository';
 
 type ConnectVtexServiceParams = {
@@ -7,6 +8,7 @@ type ConnectVtexServiceParams = {
   appToken: string;
   integrationOrder: boolean;
   integrationProduct: boolean;
+  stageId?: string;
 };
 
 @Injectable()
@@ -14,6 +16,8 @@ export class ConnectVtexService {
   constructor(
     @Inject('VtexRepository')
     private readonly vtexRepository: VtexRepositorys,
+
+    private readonly detailsStageService: DetailsStageService,
   ) {}
   async execute(params: ConnectVtexServiceParams) {
     const {
@@ -22,6 +26,7 @@ export class ConnectVtexService {
       appToken,
       integrationOrder,
       integrationProduct,
+      stageId,
     } = params;
 
     const authenticationExists = await this.vtexRepository.findByCompanyId(
@@ -32,12 +37,21 @@ export class ConnectVtexService {
       throw new BadRequestException('Vtex already connected');
     }
 
+    if (integrationOrder) {
+      console.log('integrationOrder', stageId);
+      await this.detailsStageService.execute({
+        companyId,
+        stageId: stageId,
+      });
+    }
+
     return this.vtexRepository.create({
       companyId,
       appKey,
       appToken,
       integrationOrder,
       integrationProduct,
+      stageId,
     });
   }
 }

@@ -47,8 +47,12 @@ export class SyncOrderVtexService {
       throw new NotFoundException('Authentication not found');
     }
 
-    if (!authentication.integration_order) {
-      throw new BadRequestException('Integration Order not connected');
+    if (!authentication.stageId) {
+      throw new BadRequestException('Stage is required from sync order ');
+    }
+
+    if (!authentication.stageId) {
+      throw new BadRequestException('');
     }
 
     const vtexApi = new VtexApi(
@@ -78,6 +82,7 @@ export class SyncOrderVtexService {
         const orderProcessed = await this.cacheManager.get(keyOrder);
 
         if (orderProcessed) {
+          console.log(`Order ${keyOrder} already processed`);
           continue;
         }
 
@@ -89,6 +94,7 @@ export class SyncOrderVtexService {
           companyId,
           order: detailsOrders.data,
           userId,
+          stageId: authentication.stageId,
           appKey: authentication.appKey,
           appToken: authentication.appToken,
         });

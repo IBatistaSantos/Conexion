@@ -27,6 +27,7 @@ export class VtexController {
       appToken: params.appToken,
       integrationOrder: params.integrationOrder,
       integrationProduct: params.integrationProduct,
+      stageId: params.stageId,
     });
   }
 

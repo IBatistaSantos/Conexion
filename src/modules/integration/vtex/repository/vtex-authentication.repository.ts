@@ -9,4 +9,5 @@ export type CreateVtexAuthenticationParams = {
   appToken: string;
   integrationOrder: boolean;
   integrationProduct: boolean;
+  stageId?: string;
 };

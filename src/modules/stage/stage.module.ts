@@ -19,5 +19,6 @@ import { UpdateStageService } from './services/update-stage.service';
   ],
   controllers: [StageController],
   imports: [PipelineModule],
+  exports: [DetailsStageService],
 })
 export class StageModule {}

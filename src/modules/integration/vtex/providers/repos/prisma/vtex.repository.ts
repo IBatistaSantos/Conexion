@@ -22,6 +22,7 @@ export class PrismaVtexRepository implements VtexRepositorys {
       appToken,
       integrationOrder,
       integrationProduct,
+      stageId,
     } = params;
     return this.prismaService.vtex_Authentication.create({
       data: {
@@ -30,6 +31,7 @@ export class PrismaVtexRepository implements VtexRepositorys {
         appToken,
         integration_order: integrationOrder || false,
         integration_product: integrationProduct || false,
+        stageId: stageId || undefined,
       },
     });
   }

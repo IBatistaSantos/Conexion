@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator';
 
 export class CreateAuthenticationVtexDto {
   @IsNotEmpty()
@@ -14,4 +14,8 @@ export class CreateAuthenticationVtexDto {
   @IsOptional()
   @IsBoolean()
   integrationProduct: boolean;
+
+  @ValidateIf((req) => req.integrationOrder)
+  @IsNotEmpty()
+  stageId: string;
 }

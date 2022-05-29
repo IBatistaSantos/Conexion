@@ -14,6 +14,7 @@ import { SyncOrderVtexService } from './services/sync-order-vtex.service';
 import { SyncProductVtexConsumer } from './services/sync-product-vtex.consumer';
 import { SyncProductVtexService } from './services/sync-product-vtex.service';
 import { SyncOrderVtexConsumer } from './services/sync-order-vtex.consumer';
+import { StageModule } from '../../../modules/stage/stage.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { SyncOrderVtexConsumer } from './services/sync-order-vtex.consumer';
     ProductModule,
     PersonModule,
     DealModule,
+    StageModule,
   ],
   providers: [
     ConnectVtexService,
