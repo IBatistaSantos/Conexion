@@ -108,6 +108,7 @@ model Stage {
   updatedAt  DateTime @default(now()) @map("updated_at")
 
   deals Deal[] @relation(name: "DealStage")
+  integrationOrderVtex Vtex_Authentication? @relation(name: "IntegrationOrderVtexStage")
 
   @@map("stages")
 }
@@ -204,8 +205,12 @@ model Vtex_Authentication {
   integration_order   Boolean
   integration_product Boolean
 
+  stageId String?
+  stage   Stage? @relation(name: "IntegrationOrderVtexStage", fields: [stageId], references: [id])
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
   @@map("vtex_authentications")
 }
+
