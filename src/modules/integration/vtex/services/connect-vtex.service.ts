@@ -38,7 +38,6 @@ export class ConnectVtexService {
     }
 
     if (integrationOrder) {
-      console.log('integrationOrder', stageId);
       await this.detailsStageService.execute({
         companyId,
         stageId: stageId,

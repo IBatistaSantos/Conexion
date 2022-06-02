@@ -76,29 +76,23 @@ export class SyncOrderVtexService {
         break;
       }
 
-      for (const order of ordersAtVtex) {
-        const keyOrder = `${companyId}-${order.orderId}`;
+      await Promise.all(
+        ordersAtVtex.map(async (order) => {
+          const keyOrder = `${companyId}-${order.orderId}`;
+          const hasOrderVtexIntegrated = await this.cacheManager.get(keyOrder);
 
-        const orderProcessed = await this.cacheManager.get(keyOrder);
-
-        if (orderProcessed) {
-          console.log(`Order ${keyOrder} already processed`);
-          continue;
-        }
-
-        const detailsOrders = await vtexApi.getOrderById(order.orderId);
-
-        if (!detailsOrders.success) continue;
-
-        await this.orderVtexQueue.add({
-          companyId,
-          order: detailsOrders.data,
-          userId,
-          stageId: authentication.stageId,
-          appKey: authentication.appKey,
-          appToken: authentication.appToken,
-        });
-      }
+          if (!hasOrderVtexIntegrated) {
+            await this.orderVtexQueue.add({
+              companyId,
+              order,
+              appKey: authentication.appKey,
+              appToken: authentication.appToken,
+              userId,
+              stageId: authentication.stageId,
+            });
+          }
+        }),
+      );
 
       page += 1;
     }

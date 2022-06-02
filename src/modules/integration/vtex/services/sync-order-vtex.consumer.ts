@@ -9,6 +9,7 @@ import { FindByCodeProductService } from '../../../..//modules/product/services/
 
 import { CreatePersonService } from 'src/modules/person/services/create-person.service';
 import { FindByEmailPersonService } from 'src/modules/person/services/find-person-by-email.service';
+import { VtexApi } from '../entity/vtex-api';
 
 type FindOrCreatePersonFromDeal = {
   email: string;
@@ -39,15 +40,27 @@ export class SyncOrderVtexConsumer {
     const { companyId, order, appKey, appToken, userId, stageId } = job.data;
 
     const keyOrder = `${companyId}-${order.orderId}`;
+    const vtexApi = new VtexApi(appKey, appToken, this.httpService);
 
-    const productId = await this.findOrCreateProductFromDeal(order, companyId);
+    const detailsOrders = await vtexApi.getOrderById(order.orderId);
 
-    const [emailFormatted] = order.clientProfileData.email.split('-');
+    if (!detailsOrders.success) {
+      throw new Error(detailsOrders.message);
+    }
+
+    const orderAtVtex = detailsOrders.data;
+
+    const productId = await this.findOrCreateProductFromDeal(
+      orderAtVtex,
+      companyId,
+    );
+
+    const [emailFormatted] = orderAtVtex.clientProfileData.email.split('-');
 
     const personId = await this.findOrCreatePersonFromDeal({
       email: emailFormatted,
       companyId,
-      order,
+      order: orderAtVtex,
       userId,
     });
 

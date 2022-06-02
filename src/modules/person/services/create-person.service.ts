@@ -17,34 +17,26 @@ export class CreatePersonService {
   ) {}
 
   async execute(params: CreatePersonServiceParams): Promise<any> {
-    try {
-      const { name, email, creatorId, companyId, userId } = params;
+    const { name, email, creatorId, companyId, userId } = params;
 
-      console.log(params);
-
-      if (creatorId) {
-        const hasCompanyCreator = await this.personRepository.hasCompanyCreator(
-          {
-            companyId,
-            creatorId,
-          },
-        );
-
-        if (!hasCompanyCreator) {
-          throw new UnauthorizedException(
-            `'The person's owner is not a company'`,
-          );
-        }
-      }
-
-      return this.personRepository.create({
-        name,
-        email,
-        ownerId: creatorId ?? userId,
+    if (creatorId) {
+      const hasCompanyCreator = await this.personRepository.hasCompanyCreator({
         companyId,
+        creatorId,
       });
-    } catch (error) {
-      console.log(error);
+
+      if (!hasCompanyCreator) {
+        throw new UnauthorizedException(
+          `'The person's owner is not a company'`,
+        );
+      }
     }
+
+    return this.personRepository.create({
+      name,
+      email,
+      ownerId: creatorId ?? userId,
+      companyId,
+    });
   }
 }
