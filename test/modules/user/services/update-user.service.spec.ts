@@ -19,6 +19,26 @@ describe('UpdateUserService', () => {
     email: 'email',
     name: 'name',
     password: 'password',
+    companyId: 'ownerId',
+    companyName: 'ownerName',
+  };
+
+  const resultFindById = {
+    id: 'userId',
+    email: 'email',
+    name: 'name',
+    password: 'password',
+    owner: {
+      id: 'ownerId',
+      name: 'ownerName',
+    },
+  };
+
+  const resultUpdatedUser = {
+    id: 'userId',
+    email: 'email',
+    name: 'name',
+    password: 'password',
     owner: {
       id: 'ownerId',
       name: 'ownerName',
@@ -30,8 +50,8 @@ describe('UpdateUserService', () => {
     encryption = mock();
 
     userRepository.findByEmail.mockResolvedValue(null);
-    userRepository.findById.mockResolvedValue(user);
-    userRepository.update.mockResolvedValue(user);
+    userRepository.findById.mockResolvedValue(resultFindById);
+    userRepository.update.mockResolvedValue(resultUpdatedUser);
 
     encryption.hash.mockResolvedValue('passwordHash');
     encryption.compare.mockResolvedValue(true);

@@ -14,6 +14,16 @@ describe('ProfileUserService', () => {
     email: 'any_email',
     name: 'any_name',
     password: 'any_password',
+
+    companyId: 'any_company_id',
+    companyName: 'any_company_name',
+  };
+
+  const resultFindById = {
+    id: 'any_id',
+    email: 'any_email',
+    name: 'any_name',
+    password: 'any_password',
     owner: {
       id: 'any_company_id',
       name: 'any_company_name',
@@ -22,7 +32,7 @@ describe('ProfileUserService', () => {
 
   beforeAll(() => {
     userRepository = mock();
-    userRepository.findById.mockResolvedValue(user);
+    userRepository.findById.mockResolvedValue(resultFindById);
   });
 
   afterEach(() => {
