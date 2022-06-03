@@ -26,9 +26,7 @@ export class CreatePersonService {
       });
 
       if (!hasCompanyCreator) {
-        throw new UnauthorizedException(
-          `'The person's owner is not a company'`,
-        );
+        throw new UnauthorizedException("The person's owner is not a company");
       }
     }
 

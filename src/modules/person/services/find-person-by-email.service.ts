@@ -8,10 +8,13 @@ export class FindByEmailPersonService {
     private readonly personRepository: PersonRepository,
   ) {}
 
-  async execute(params: { email: string }): Promise<any> {
-    const { email } = params;
+  async execute(params: { email: string; companyId: string }): Promise<any> {
+    const { email, companyId } = params;
 
-    const person = await this.personRepository.findByEmail(email);
+    const person = await this.personRepository.findByEmail({
+      email,
+      companyId,
+    });
 
     return person;
   }

@@ -114,6 +114,7 @@ export class SyncOrderVtexConsumer {
     const { email, order, userId, companyId } = params;
     const personFound = await this.findPersonService.execute({
       email,
+      companyId,
     });
 
     if (!personFound) {

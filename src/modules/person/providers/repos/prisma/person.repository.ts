@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   CreatePersonParams,
   DeletePersonParams,
+  FindByEmailPersonParams,
   HasCompanyCreatorParams,
   PersonRepository,
   UpdatePersonParams,
@@ -11,13 +12,17 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 @Injectable()
 export class PrismaPersonRepository implements PersonRepository {
   constructor(private readonly prismaService: PrismaService) {}
-  findByEmail(email: string): Promise<any> {
+  findByEmail(params: FindByEmailPersonParams): Promise<any> {
     return this.prismaService.person.findFirst({
       where: {
-        email,
+        email: params.email,
+        AND: {
+          companyId: params.companyId,
+        },
       },
     });
   }
+
   delete(params: DeletePersonParams): Promise<any> {
     return this.prismaService.person.deleteMany({
       where: {

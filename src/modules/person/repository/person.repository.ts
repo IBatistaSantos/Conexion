@@ -1,10 +1,15 @@
 export interface PersonRepository {
   findById(personId: string): Promise<any>;
-  findByEmail(email: string): Promise<any>;
+  findByEmail(params: FindByEmailPersonParams): Promise<any>;
   create(params: CreatePersonParams): Promise<any>;
   update(params: UpdatePersonParams): Promise<any>;
   delete(params: DeletePersonParams): Promise<any>;
   hasCompanyCreator(params: HasCompanyCreatorParams): Promise<boolean>;
+}
+
+export interface FindByEmailPersonParams {
+  email: string;
+  companyId: string;
 }
 
 export type CreatePersonParams = {
