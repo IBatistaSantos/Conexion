@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { DetailsPipelineService } from 'src/modules/pipeline/services/details-pipeline.service';
+import { DetailsPipelineService } from '../../../modules/pipeline/services/details-pipeline.service';
 
 import { StageRepository } from '../repository/stage.repository';
 
