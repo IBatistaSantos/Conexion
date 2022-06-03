@@ -48,7 +48,7 @@ export class UpdatePipelineService {
         companyId,
       });
 
-      if (pipelineAlreadyExists && pipelineAlreadyExists.id !== pipelineId) {
+      if (pipelineAlreadyExists) {
         throw new BadRequestException(
           `Pipeline with name ${name} already exists`,
         );
