@@ -57,6 +57,8 @@ export class CreateProductService {
       name: product.name,
       code: product.code,
       description: product.description,
+      category: product.category,
+      companyId: product.companyId,
       prices: {
         price: price.price,
         currency: price.currency,
