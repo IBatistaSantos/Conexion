@@ -1,20 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PipelineRepository } from '../repository/pipeline.repository';
+import { DealRepository } from '../repository/deal.repository';
 
-type ListAllPipelineServiceParams = {
+type ListAllDealByPipelineServiceParams = {
   companyId: string;
   pipelineId: string;
 };
 @Injectable()
 export class ListDealPipelineService {
   constructor(
-    @Inject('PipelineRepository')
-    private readonly pipelineRepository: PipelineRepository,
+    @Inject('DealRepository')
+    private readonly dealRepository: DealRepository,
   ) {}
 
-  async execute(params: ListAllPipelineServiceParams): Promise<any> {
+  async execute(params: ListAllDealByPipelineServiceParams): Promise<any> {
     const { pipelineId, companyId } = params;
-    const deals = await this.pipelineRepository.findDealByPipelineId({
+    const deals = await this.dealRepository.findDealByPipelineId({
       pipelineId,
       companyId,
     });

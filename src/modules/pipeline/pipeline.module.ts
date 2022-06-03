@@ -6,7 +6,6 @@ import { CreatePipelineService } from './services/create-pipeline.service';
 import { DeletePipelineService } from './services/delete-pipeline.service';
 import { DetailsPipelineService } from './services/details-pipeline.service';
 import { ListAllPipelineService } from './services/list-all-pipeline.service';
-import { ListDealPipelineService } from './services/list-deal-pipeline.service';
 import { UpdatePipelineService } from './services/update-pipeline.service';
 
 @Module({
@@ -17,7 +16,6 @@ import { UpdatePipelineService } from './services/update-pipeline.service';
     DetailsPipelineService,
     ListAllPipelineService,
     { provide: 'PipelineRepository', useClass: PrismaPipelineRepository },
-    ListDealPipelineService,
   ],
   controllers: [PipelineController],
   imports: [],

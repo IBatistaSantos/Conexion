@@ -2,14 +2,59 @@ import { Injectable } from '@nestjs/common';
 import {
   CreateDealParams,
   DealRepository,
+  FindDealsByPipelineParams,
+  FindDealsByPipelineResult,
   HasCompanyParams,
   HasStageAvailableParams,
-} from 'src/modules/deal/repository/deal.repository';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
+} from '../../../repository/deal.repository';
+import { PrismaService } from '../../../../../modules/prisma/prisma.service';
 
 @Injectable()
 export class PrismaDealRepository implements DealRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
+  findDealByPipelineId(
+    params: FindDealsByPipelineParams,
+  ): Promise<FindDealsByPipelineResult[]> {
+    const { pipelineId, companyId } = params;
+    return this.prismaService.deal.findMany({
+      where: {
+        stage: {
+          pipelineId,
+          AND: {
+            pipeline: {
+              companyId,
+            },
+          },
+        },
+      },
+      include: {
+        stage: {
+          include: {
+            pipeline: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+        creator: {
+          select: {
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+  }
+
   async hasStageAvailable(params: HasStageAvailableParams): Promise<boolean> {
     const { companyId, stageId } = params;
 
