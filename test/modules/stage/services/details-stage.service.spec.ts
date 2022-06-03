@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CreateStageService } from '../../../../src/modules/stage/services/create-stage.service';
+import { DetailsStageService } from '../../../../src/modules/stage/services/details-stage.service';
 
 import { MockProxy, mock } from 'jest-mock-extended';
 import { StageRepository } from '../../../../src/modules/stage/repository/stage.repository';
 import { DetailsPipelineService } from '../../../../src/modules/pipeline/services/details-pipeline.service';
-import { BadRequestException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 jest.useFakeTimers().setSystemTime(new Date(2020, 1, 1));
 
-describe('CreatPipelineService', () => {
-  let service: CreateStageService;
+describe('DetailsStageService', () => {
+  let service: DetailsStageService;
 
   let stageRepository: MockProxy<StageRepository>;
   let detailsPipelineService: MockProxy<DetailsPipelineService>;
@@ -35,7 +35,8 @@ describe('CreatPipelineService', () => {
     stageRepository = mock();
     detailsPipelineService = mock();
 
-    stageRepository.findByName.mockResolvedValue(null);
+    stageRepository.findById.mockResolvedValue(stage);
+
     detailsPipelineService.execute.mockResolvedValue(pipeline);
     stageRepository.create.mockResolvedValue(stage);
   });
@@ -47,25 +48,49 @@ describe('CreatPipelineService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CreateStageService,
+        DetailsStageService,
         { provide: 'StageRepository', useValue: stageRepository },
         { provide: DetailsPipelineService, useValue: detailsPipelineService },
       ],
     }).compile();
 
-    service = module.get<CreateStageService>(CreateStageService);
+    service = module.get<DetailsStageService>(DetailsStageService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
+  it('should call findById with correct parameters', async () => {
+    await service.execute({
+      stageId: 'any_stageId',
+      companyId: 'any_companyId',
+    });
+
+    expect(stageRepository.findById).toBeCalledWith('any_stageId');
+    expect(stageRepository.findById).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw an error if stage not found', async () => {
+    stageRepository.findById.mockResolvedValueOnce(null);
+
+    const data = {
+      stageId: 'any_stageId',
+      companyId: 'any_companyId',
+    };
+
+    const promise = service.execute(data);
+
+    await expect(promise).rejects.toThrow(
+      new NotFoundException(`Stage with id ${data.stageId} not found`),
+    );
+  });
+
   it('should call DetailsPipelineService with correct parameters', async () => {
     const spyOn = jest.spyOn(detailsPipelineService, 'execute');
     await service.execute({
+      stageId: 'any_stageId',
       companyId: 'any_companyId',
-      pipelineId: 'any_pipelineId',
-      name: 'any_name',
     });
 
     expect(spyOn).toBeCalledWith({
@@ -75,56 +100,10 @@ describe('CreatPipelineService', () => {
     expect(spyOn).toHaveBeenCalledTimes(1);
   });
 
-  it('should throw an error if pipeline not found', async () => {
-    detailsPipelineService.execute.mockResolvedValueOnce(null);
-    const data = {
-      companyId: 'any_companyId',
-      pipelineId: 'any_pipelineId',
-      name: 'any_name',
-    };
-    const promise = service.execute(data);
-
-    await expect(promise).rejects.toThrow(
-      new BadRequestException('Pipeline does not exist'),
-    );
-  });
-
-  it('should throw an error if stage already exists', async () => {
-    stageRepository.findByName.mockResolvedValueOnce(stage);
-    const data = {
-      companyId: 'any_companyId',
-      pipelineId: 'any_pipelineId',
-      name: 'any_name',
-    };
-    const promise = service.execute(data);
-
-    await expect(promise).rejects.toThrow(
-      new BadRequestException(
-        `Stage with name ${data.name} already exists from pipeline ${pipeline.name}`,
-      ),
-    );
-  });
-
-  it('should call create with correct parameters', async () => {
-    await service.execute({
-      companyId: 'any_companyId',
-      pipelineId: 'any_pipelineId',
-      name: 'any_name',
-    });
-
-    expect(stageRepository.create).toBeCalledWith({
-      pipelineId: 'any_pipelineId',
-      name: 'any_name',
-    });
-
-    expect(stageRepository.create).toHaveBeenCalledTimes(1);
-  });
-
   it('should returns an stage on success', async () => {
     const result = await service.execute({
+      stageId: 'any_stageId',
       companyId: 'any_companyId',
-      pipelineId: 'any_pipelineId',
-      name: 'any_name',
     });
 
     expect(result).toEqual(stage);
