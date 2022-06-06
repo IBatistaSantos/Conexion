@@ -119,24 +119,6 @@ describe('CreateDealService', () => {
     );
   });
 
-  /*  it('should call Create with correct parameters', async () => {
-    await service.execute({
-      name: 'any_company_name',
-      owner: {
-        name: 'any_owner_name',
-        email: 'any_owner_email',
-        password: 'any_owner_password',
-      },
-    });
-
-    expect(dealRepository.create).toBeCalledWith({
-      name: 'any_company_name',
-      ownerId: user.id,
-    });
-    expect(dealRepository.create).toHaveBeenCalledTimes(1);
-  });
-  */
-
   it('should returns an deal on success', async () => {
     const result = await service.execute({
       title: 'any_title',
