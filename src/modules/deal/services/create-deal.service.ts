@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DetailsPersonService } from '../../../modules/person/services/detail-person.service';
 import { DetailsProductService } from '../../../modules/product/services/details-product.service';
 import { DealRepository } from '../repository/deal.repository';
@@ -41,7 +41,7 @@ export class CreateDealService {
       });
 
       if (person.companyId !== companyId) {
-        throw new Error('Person not in company');
+        throw new BadRequestException('Person not in company');
       }
     }
 
@@ -52,7 +52,7 @@ export class CreateDealService {
       });
 
       if (product.companyId !== companyId) {
-        throw new Error('Product not in company');
+        throw new BadRequestException('Product not in company');
       }
     }
 
@@ -62,7 +62,7 @@ export class CreateDealService {
     });
 
     if (!stageAvailable) {
-      throw new Error('Stage not available');
+      throw new BadRequestException('Stage not available');
     }
 
     const deal = await this.dealRepository.create({

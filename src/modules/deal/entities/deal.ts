@@ -10,18 +10,18 @@ export type Deal = {
     id: string;
     name: string;
     pipelineId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
   };
-  user: {
+  user?: {
     name: string;
     id: string;
   };
-  person: {
+  person?: {
     id: string;
     name: string;
   };
-  product: {
+  product?: {
     id: string;
     code: string;
     name: string;
