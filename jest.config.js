@@ -1,11 +1,15 @@
 module.exports = {
-  moduleFileExtensions: ['js', 'json', 'ts'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/config/**',
+    '!<rootDir>/src/modules/**/dtos/**/*.ts',
+    '!<rootDir>/src/**/*.module.ts',
+  ],
   roots: ['<rootDir>/src', '<rootDir>/test'],
-  testRegex: '.*\\.spec\\.ts$',
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    '\\.ts': 'ts-jest',
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
+  clearMocks: true,
 };
